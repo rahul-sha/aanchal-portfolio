@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Aanchal Sharma, brand and content strategist. Creator campaigns, UGC programmes, brand films, and launch strategy.">
 <title>Aanchal Sharma, brand and content strategist</title>
+<meta name="theme-color" content="#F6F3EC">
+<meta property="og:title" content="Aanchal Sharma, brand and content strategist">
+<meta property="og:description" content="Creator campaigns, UGC programmes, brand films, and launch strategy.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230E0E1A'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-family='Georgia,serif' font-size='36' fill='%23D9F55B'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Albert+Sans:wght@400;500;600&display=swap">
 <style>
 /* Layout: a deck of full-height panels. Each panel is sticky; the next one slides up over it while the one beneath eases back (scale, darken). Two panels are WebGL stages (studio hero, creator wall). */
@@ -25,6 +32,10 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .gutter{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .wrap{max-width:1240px;margin:0 auto;width:100%}
 a{color:inherit}
+.skip{position:absolute;left:16px;top:-60px;z-index:100;background:var(--ink);color:var(--cream);padding:10px 16px;border-radius:999px;font-size:14px}
+.skip:focus{top:16px}
+section[id],footer[id]{scroll-margin-top:72px}
+.reel video{cursor:pointer}
 a:focus-visible,button:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
 h1,h2,h3{font-family:var(--display);font-weight:300;letter-spacing:-.025em;text-wrap:balance;font-variation-settings:"SOFT" 40,"WONK" 1}
 em{font-style:italic;font-weight:300}
@@ -197,6 +208,7 @@ em{font-style:italic;font-weight:300}
 </style>
 </head>
 <body>
+<a class="skip" href="#work">Skip to the work</a>
 
 <nav class="nav gutter" aria-label="Main">
   <div class="wrap">
@@ -216,7 +228,7 @@ em{font-style:italic;font-weight:300}
     <div class="wrap" id="hero-text">
       <div class="eyebrow">Content &amp; influencer strategist · Pune · Singapore · Seoul</div>
       <h1 id="hero-h1">Where the <b class="hi">work</b> gets made.</h1>
-      <p class="lead">I'm Aanchal. For five years I've owned content end to end: brief, treatment, budget, casting, shoot, and post. 8M+ organic views, 1,762 leads, and one Short that hit 2 million views in a day.</p>
+      <p class="lead">I’m Aanchal. For five years I’ve owned content end to end: brief, treatment, budget, casting, shoot, and post. 8M+ organic views, 1,762 leads, and one Short that hit 2 million views in a day.</p>
       <div class="btns"><a class="btn p" href="#work">See the work <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a><a class="btn g" href="#contact">Get in touch</a></div>
     </div>
     <div class="wrap foot"><span>Drag to look around · click a glowing marker</span><span id="studio-status">5 areas · scroll ↓</span></div>
@@ -245,11 +257,11 @@ em{font-style:italic;font-weight:300}
     <span class="num rv" data-rv>02 — Selected work</span>
     <div class="sec-head rv" data-rv><h2>Work that <em>stops</em> the scroll</h2><p>Every video plays here on the page. Open a project for the brief, what I did, and the result.</p></div>
     <div class="work rv-stagger" data-rv>
-      <article><div class="thumb"><img src="img/interview.jpg" alt="" data-px><span class="tag">Influencer</span><button type="button" aria-label="Open Marathi creator campaign" data-open="proj-marathi"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></button></div><h3>Marathi creator-led campaign <span>01</span></h3><p>Five Marathi creators, one admissions push for NIAT. <span class="r">6M+ views</span> across Maharashtra in two months.</p></article>
-      <article><div class="thumb" style="background:var(--blue)"><div class="ph" style="color:#fff"><span class="big" style="font-size:44px;line-height:.95">Creators<br>Program</span><span class="lab">UGC community · NIAT Pune</span></div><span class="tag">UGC</span><button type="button" aria-label="Open Student Creator Program" data-open="proj-ugc"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></button></div><h3>Student Creator Program <span>02</span></h3><p>Built Pune's student creator and UGC engine. <span class="r">15+ creators, 200+ videos, 500K+ views.</span></p></article>
-      <article><div class="thumb"><img src="img/stage.jpg" alt="" data-px><span class="tag">Production</span><button type="button" aria-label="Open brand films and events" data-open="proj-events"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></button></div><h3>Brand films &amp; events <span>03</span></h3><p>End-to-end production for <span class="r">15+ campus events</span> and NIAT brand films, with a team of three.</p></article>
+      <article><div class="thumb"><img src="img/interview.jpg" alt="" data-px width="435" height="718" loading="lazy" decoding="async"><span class="tag">Influencer</span><button type="button" aria-label="Open Marathi creator campaign" data-open="proj-marathi"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></button></div><h3>Marathi creator-led campaign <span>01</span></h3><p>Five Marathi creators, one admissions push for NIAT. <span class="r">6M+ views</span> across Maharashtra in two months.</p></article>
+      <article><div class="thumb" style="background:var(--blue)"><div class="ph" style="color:#fff"><span class="big" style="font-size:44px;line-height:.95">Creators<br>Program</span><span class="lab">UGC community · NIAT Pune</span></div><span class="tag">UGC</span><button type="button" aria-label="Open Student Creator Program" data-open="proj-ugc"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></button></div><h3>Student Creator Program <span>02</span></h3><p>Built Pune’s student creator and UGC engine. <span class="r">15+ creators, 200+ videos, 500K+ views.</span></p></article>
+      <article><div class="thumb"><img src="img/stage.jpg" alt="" data-px width="429" height="718" loading="lazy" decoding="async"><span class="tag">Production</span><button type="button" aria-label="Open brand films and events" data-open="proj-events"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></button></div><h3>Brand films &amp; events <span>03</span></h3><p>End-to-end production for <span class="r">15+ campus events</span> and NIAT brand films, with a team of three.</p></article>
       <article><div class="thumb" style="background:var(--lime)"><div class="ph"><span class="big">2M</span><span class="lab">YouTube Short · 24 hours</span></div><span class="tag">On camera</span><button type="button" aria-label="Open the 24-hour Short" data-open="proj-short"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></button></div><h3>The 24-hour Short <span>04</span></h3><p>One Short, <span class="r">2 million views and 2,000 subscribers</span> in a single day.</p></article>
-      <article><div class="thumb" style="background:var(--blue)"><div class="ph" style="color:#fff"><span class="big" style="font-size:48px">L'Oréal Luxe</span><span class="lab">Takami launch · SEA</span></div><span class="tag">Strategy</span><button type="button" aria-label="Open Takami launch" data-open="proj-takami"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></button></div><h3>Takami launch, South-East Asia <span>05</span></h3><p>360-degree media and retail plan, five Shopee and Sephora campaigns, and a workshop for <span class="r">150+ creators</span>.</p></article>
+      <article><div class="thumb" style="background:var(--blue)"><div class="ph" style="color:#fff"><span class="big" style="font-size:48px">L’Oréal Luxe</span><span class="lab">Takami launch · SEA</span></div><span class="tag">Strategy</span><button type="button" aria-label="Open Takami launch" data-open="proj-takami"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></button></div><h3>Takami launch, South-East Asia <span>05</span></h3><p>360-degree media and retail plan, five Shopee and Sephora campaigns, and a workshop for <span class="r">150+ creators</span>.</p></article>
       <article><div class="thumb" style="background:var(--sky)"><div class="ph"><span class="big">60+</span><span class="lab">brands · Singapore</span></div><span class="tag">Brand content</span><button type="button" aria-label="Open brand content partner" data-open="proj-sg"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></button></div><h3>Brand content partner <span>06</span></h3><p>Four years of launch, seasonal, and awareness content, including a retention campaign that drove <span class="r">150 purchases</span> in two months.</p></article>
     </div>
   </div></div>
@@ -272,13 +284,13 @@ em{font-style:italic;font-weight:300}
 
 <section class="panel p-lilac" id="about">
   <div class="inner gutter"><div class="wrap about">
-    <div class="pic rv" data-rv><img src="img/portrait.jpg" alt="Portrait of Aanchal Sharma" data-px><div class="badge">open to<br>new roles</div></div>
+    <div class="pic rv" data-rv><img src="img/portrait.jpg" alt="Portrait of Aanchal Sharma" data-px width="497" height="620" loading="lazy" decoding="async"><div class="badge">open to<br>new roles</div></div>
     <div class="txt rv" data-rv>
       <span class="num">04 — About</span>
       <h2>Global content &amp; <em>influencer</em> strategist</h2>
-      <p>I believe good content doesn't just fill a feed. It makes people stop, feel, and remember.</p>
-      <p>I've shot, edited, and shipped hundreds of pieces, from scrappy phone-shot Reels to full brand films with production houses, for clients across India, Singapore, and South Korea. I bring creative instinct, hands-on execution, and a global perspective to every story.</p>
-      <div class="pills"><span class="pill b">NxtWave · NIAT Pune</span><span class="pill c">L'Oréal Luxe</span><span class="pill l">60+ Singapore brands</span><span class="pill">MSc Digital Marketing, SUSS</span></div>
+      <p>I believe good content doesn’t just fill a feed. It makes people stop, feel, and remember.</p>
+      <p>I’ve shot, edited, and shipped hundreds of pieces, from scrappy phone-shot Reels to full brand films with production houses, for clients across India, Singapore, and South Korea. I bring creative instinct, hands-on execution, and a global perspective to every story.</p>
+      <div class="pills"><span class="pill b">NxtWave · NIAT Pune</span><span class="pill c">L’Oréal Luxe</span><span class="pill l">60+ Singapore brands</span><span class="pill">MSc Digital Marketing, SUSS</span></div>
     </div>
   </div></div>
   <div class="veil"></div>
@@ -291,8 +303,8 @@ em{font-style:italic;font-weight:300}
     <div class="xp rv-stagger" data-rv>
       <div class="row"><span class="y">2025 — NOW</span><span class="t">Social Media Strategist, NxtWave (NIAT Pune)</span><span class="w">Pune, India</span></div>
       <div class="row"><span class="y">2021 — 2025</span><span class="t">Freelance Brand Content Partner</span><span class="w">Singapore</span></div>
-      <div class="row"><span class="y">2024</span><span class="t">Marketing Intern, L'Oréal Luxe</span><span class="w">Singapore</span></div>
-      <div class="row"><span class="y">2023 — 2024</span><span class="t">Master's in Digital Marketing, Singapore University of Social Sciences</span><span class="w">Thesis on influencer tiers and engagement</span></div>
+      <div class="row"><span class="y">2024</span><span class="t">Marketing Intern, L’Oréal Luxe</span><span class="w">Singapore</span></div>
+      <div class="row"><span class="y">2023 — 2024</span><span class="t">Master’s in Digital Marketing, Singapore University of Social Sciences</span><span class="w">Thesis on influencer tiers and engagement</span></div>
     </div>
   </div></div>
   <div class="veil"></div>
@@ -302,7 +314,7 @@ em{font-style:italic;font-weight:300}
   <div class="blob" aria-hidden="true"></div>
   <div class="inner gutter"><div class="wrap">
     <span class="num rv" data-rv>06 — Contact</span>
-    <h2 class="rv" data-rv>Let's make something people <em>remember.</em></h2>
+    <h2 class="rv" data-rv>Let’s make something people <em>remember.</em></h2>
     <div class="links rv" data-rv><span>aanchalsharma@outlook.in</span><a href="https://www.linkedin.com/in/aanchal-sh/">LinkedIn</a><a href="https://www.instagram.com/by_aanchall">Instagram</a></div>
     <div class="copy">© 2026 Aanchal Sharma · Prototype</div>
   </div></div>
@@ -313,8 +325,8 @@ em{font-style:italic;font-weight:300}
   <div class="box">
     <button type="button" class="close" data-close aria-label="Close">&times;</button>
     <div class="head"><div><span class="num">01 — Influencer campaign · 2026</span><h2 id="pm-title">Marathi creator-led campaign</h2></div><div class="meta"><span>Client <b>NIAT, NxtWave</b></span><span>Role <b>Strategy, casting, briefing</b></span><span>Result <b>6M+ views in two months</b></span></div></div>
-    <p class="sum">Five Marathi creators, from comedy to lifestyle, were briefed to tell the NIAT story in their own voice to families across Maharashtra during admissions season. The reels below are the creators' published posts.</p>
-    <div class="reels"><figure class="reel"><div class="ph"><video muted loop playsinline preload="none" poster="media/r1-poster.jpg" data-src="media/r1-preview.mp4"></video></div><figcaption><b>Siddhant Naik</b>Creator reel · NIAT Maharashtra<br><a href="https://www.instagram.com/reels/DbDu9pTupZz/">View full reel on Instagram</a></figcaption></figure><figure class="reel"><div class="ph"><video muted loop playsinline preload="none" poster="media/r2-poster.jpg" data-src="media/r2-preview.mp4"></video></div><figcaption><b>Sahil Gaikwad</b>Creator reel · NIAT Maharashtra<br><a href="https://www.instagram.com/reels/DcVKnp6IuRS/">View full reel on Instagram</a></figcaption></figure><figure class="reel"><div class="ph"><video muted loop playsinline preload="none" poster="media/r3-poster.jpg" data-src="media/r3-preview.mp4"></video></div><figcaption><b>Aditya Dere</b>Creator reel · NIAT Maharashtra<br><a href="https://www.instagram.com/reels/DclhIWcRsJh/">View full reel on Instagram</a></figcaption></figure><figure class="reel"><div class="ph"><video muted loop playsinline preload="none" poster="media/r4-poster.jpg" data-src="media/r4-preview.mp4"></video></div><figcaption><b>Mh19_Comedian</b>Creator reel · NIAT Maharashtra<br><a href="https://www.instagram.com/reels/DcbFaRVPQ8n/">View full reel on Instagram</a></figcaption></figure><figure class="reel"><div class="ph"><video muted loop playsinline preload="none" poster="media/r5-poster.jpg" data-src="media/r5-preview.mp4"></video></div><figcaption><b>Gauravmalode5</b>Creator reel · NIAT Maharashtra<br><a href="https://www.instagram.com/reels/DbNTKMStSUa/">View full reel on Instagram</a></figcaption></figure></div>
+    <p class="sum">Five Marathi creators, from comedy to lifestyle, were briefed to tell the NIAT story in their own voice to families across Maharashtra during admissions season. The reels below are the creators’ published posts.</p>
+    <div class="reels"><figure class="reel"><div class="ph"><video muted loop playsinline preload="none" aria-label="Reel preview, click to play or pause" poster="media/r1-poster.jpg" data-src="media/r1-preview.mp4"></video></div><figcaption><b>Siddhant Naik</b>Creator reel · NIAT Maharashtra<br><a href="https://www.instagram.com/reels/DbDu9pTupZz/">View full reel on Instagram</a></figcaption></figure><figure class="reel"><div class="ph"><video muted loop playsinline preload="none" aria-label="Reel preview, click to play or pause" poster="media/r2-poster.jpg" data-src="media/r2-preview.mp4"></video></div><figcaption><b>Sahil Gaikwad</b>Creator reel · NIAT Maharashtra<br><a href="https://www.instagram.com/reels/DcVKnp6IuRS/">View full reel on Instagram</a></figcaption></figure><figure class="reel"><div class="ph"><video muted loop playsinline preload="none" aria-label="Reel preview, click to play or pause" poster="media/r3-poster.jpg" data-src="media/r3-preview.mp4"></video></div><figcaption><b>Aditya Dere</b>Creator reel · NIAT Maharashtra<br><a href="https://www.instagram.com/reels/DclhIWcRsJh/">View full reel on Instagram</a></figcaption></figure><figure class="reel"><div class="ph"><video muted loop playsinline preload="none" aria-label="Reel preview, click to play or pause" poster="media/r4-poster.jpg" data-src="media/r4-preview.mp4"></video></div><figcaption><b>Mh19_Comedian</b>Creator reel · NIAT Maharashtra<br><a href="https://www.instagram.com/reels/DcbFaRVPQ8n/">View full reel on Instagram</a></figcaption></figure><figure class="reel"><div class="ph"><video muted loop playsinline preload="none" aria-label="Reel preview, click to play or pause" poster="media/r5-poster.jpg" data-src="media/r5-preview.mp4"></video></div><figcaption><b>Gauravmalode5</b>Creator reel · NIAT Maharashtra<br><a href="https://www.instagram.com/reels/DbNTKMStSUa/">View full reel on Instagram</a></figcaption></figure></div>
     <p class="note">Previews are short muted loops. Full reels will play here once the originals are hosted; for now the link opens Instagram.</p>
   </div>
 </dialog>
@@ -323,7 +335,7 @@ em{font-style:italic;font-weight:300}
   <div class="box">
     <button type="button" class="close" data-close aria-label="Close">&times;</button>
     <div class="head"><div><span class="num">02 — UGC community programme · 2025 to 2026</span><h2 id="pu-title">Student Creator Program</h2></div><div class="meta"><span>Client <b>NIAT Pune, NxtWave</b></span><span>Role <b>Programme lead; strategy and UGC</b></span><span>Scale <b>15+ creators, 200+ videos</b></span></div></div>
-    <p class="sum">Led Pune's student creator and UGC strategy: a standing community of student creators on campus who produce a steady stream of authentic, short-form content about life at NIAT, so the brand speaks in students' voices rather than its own.</p>
+    <p class="sum">Led Pune’s student creator and UGC strategy: a standing community of student creators on campus who produce a steady stream of authentic, short-form content about life at NIAT, so the brand speaks in students’ voices rather than its own.</p>
     <div class="ugcgrid">
       <div class="hero"><div class="word">Creators<br><i>Program</i></div><div class="sub">A student-run content engine for NIAT Pune, briefed and quality-checked weekly, published across Instagram and YouTube.</div></div>
       <div>
@@ -336,20 +348,20 @@ em{font-style:italic;font-weight:300}
       <div class="full">
         <ol class="steps">
           <li><span class="k">01</span><div><b>Recruit</b><span>Scout and onboard students who already make content, across courses and years.</span></div></li>
-          <li><span class="k">02</span><div><b>Brief</b><span>Weekly content themes, hooks, and formats, with room for each creator's own voice.</span></div></li>
+          <li><span class="k">02</span><div><b>Brief</b><span>Weekly content themes, hooks, and formats, with room for each creator’s own voice.</span></div></li>
           <li><span class="k">03</span><div><b>Produce</b><span>Light-touch review for brand safety and quality, never a script.</span></div></li>
           <li><span class="k">04</span><div><b>Amplify</b><span>Best performers reposted on NIAT channels and fed back into the next brief.</span></div></li>
         </ol>
       </div>
     </div>
-    <p class="note">Programme steps are a working summary and can be rewritten in Aanchal's words. Example videos can be added here later if any are available.</p>
+    <p class="note">Programme steps are a working summary and can be rewritten in Aanchal’s words. Example videos can be added here later if any are available.</p>
   </div>
 </dialog>
 <dialog class="proj" id="proj-short" aria-labelledby="ps-title">
   <div class="box">
     <button type="button" class="close" data-close aria-label="Close">&times;</button>
     <div class="head"><div><span class="num">04 — On camera · 2025</span><h2 id="ps-title">The 24-hour Short</h2></div><div class="meta"><span>Channel <b>NIAT Pune, YouTube</b></span><span>Role <b>Concept, on camera, edit</b></span><span>Result <b>2M views in a day</b></span></div></div>
-    <p class="sum">One YouTube Short, written and fronted by Aanchal, that reached two million views and brought in two thousand new subscribers within twenty-four hours of posting. It became the channel's fastest-growing piece and set the format for the Shorts that followed.</p>
+    <p class="sum">One YouTube Short, written and fronted by Aanchal, that reached two million views and brought in two thousand new subscribers within twenty-four hours of posting. It became the channel’s fastest-growing piece and set the format for the Shorts that followed.</p>
     <div class="ugcgrid">
       <div class="hero lime"><div class="word">2M<br><i>in 24 hours</i></div><div class="sub">A single vertical Short, phone-shot, cut for the first second. The hook did the work.</div></div>
       <div><div class="ugcstats"><div><div class="n"><span data-count="2">0</span>M<span class="s">+</span></div><div class="l">views in the first 24 hours</div></div><div><div class="n"><span data-count="2000" data-comma>0</span><span class="s">+</span></div><div class="l">new subscribers from one video</div></div><div><div class="n"><span data-count="24">0</span><span class="s">h</span></div><div class="l">from posting to both milestones</div></div></div></div>
@@ -361,8 +373,8 @@ em{font-style:italic;font-weight:300}
 <dialog class="proj" id="proj-takami" aria-labelledby="pt-title">
   <div class="box">
     <button type="button" class="close" data-close aria-label="Close">&times;</button>
-    <div class="head"><div><span class="num">05 — Strategy · L'Oréal Luxe, Singapore · 2024</span><h2 id="pt-title">Takami launch, South-East Asia</h2></div><div class="meta"><span>Client <b>L'Oréal Luxe</b></span><span>Role <b>Marketing intern, reporting to the GM</b></span><span>Scope <b>360° media and retail plan</b></span></div></div>
-    <p class="sum">A 360-degree media and retail plan for the launch of Takami, L'Oréal Luxe's Japanese skincare brand, in South-East Asia: built to establish awareness fast and spark engagement across platforms, presented to the General Manager and carried through to e-commerce and a creator workshop.</p>
+    <div class="head"><div><span class="num">05 — Strategy · L’Oréal Luxe, Singapore · 2024</span><h2 id="pt-title">Takami launch, South-East Asia</h2></div><div class="meta"><span>Client <b>L’Oréal Luxe</b></span><span>Role <b>Marketing intern, reporting to the GM</b></span><span>Scope <b>360° media and retail plan</b></span></div></div>
+    <p class="sum">A 360-degree media and retail plan for the launch of Takami, L’Oréal Luxe’s Japanese skincare brand, in South-East Asia: built to establish awareness fast and spark engagement across platforms, presented to the General Manager and carried through to e-commerce and a creator workshop.</p>
     <div class="ugcgrid">
       <div class="hero "><div class="word">Takami<br><i>× SEA</i></div><div class="sub">Launch strategy for a Japanese skincare brand, from media mix to the Shopee storefront.</div></div>
       <div><div class="ugcstats"><div><div class="n"><span data-count="5">0</span></div><div class="l">e-commerce campaigns, including Shopee and Sephora Singapore</div></div><div><div class="n"><span data-count="150">0</span><span class="s">+</span></div><div class="l">creators at the launch workshop, Singapore and Malaysia</div></div><div><div class="n"><span data-count="2">0</span></div><div class="l">platforms on the editorial calendar: Instagram and TikTok</div></div></div></div>
@@ -389,8 +401,8 @@ em{font-style:italic;font-weight:300}
     <button type="button" class="close" data-close aria-label="Close">&times;</button>
     <div class="head"><div><span class="num">03 — Event production · 2025 to 2026</span><h2 id="pe-title">Brand films &amp; campus events</h2></div><div class="meta"><span>Client <b>NIAT Pune, NxtWave</b></span><span>Role <b>YouTube content lead; brief to post</b></span><span>Scale <b>15+ events</b></span></div></div>
     <p class="sum">End-to-end production for 15+ campus events and the NIAT Pune YouTube channel, run like a production house: brief, treatment, budget, casting, on-ground shoot, and post-production storytelling. A team of three, including an associate video producer and cinematographer.</p>
-    <div class="reels films"><figure class="reel"><div class="ph"><img src="img/interview.jpg" alt=""><a class="play" href="https://www.youtube.com/watch?v=E7lAGr8AEkU" aria-label="Watch Jackie Shroff sent Thugesh a legal notice on YouTube"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></a></div><figcaption><b>Jackie Shroff sent Thugesh a legal notice</b>Podcast shoot with Thugesh · NIAT Pune YouTube<br><a href="https://www.youtube.com/watch?v=E7lAGr8AEkU">Watch on YouTube</a></figcaption></figure><figure class="reel"><div class="ph"><img src="img/stage.jpg" alt=""><a class="play" href="https://www.youtube.com/watch?v=b5keoR-jWU4" aria-label="Watch NIAT exposed: watch this before you join on YouTube"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></a></div><figcaption><b>NIAT exposed: watch this before you join</b>Brand film · NIAT Pune YouTube<br><a href="https://www.youtube.com/watch?v=b5keoR-jWU4">Watch on YouTube</a></figcaption></figure><figure class="reel"><div class="ph"><img src="img/camera.jpg" alt=""><a class="play" href="https://www.youtube.com/watch?v=CO737Z_ezB0" aria-label="Watch NIAT Pune freshers review campus life on YouTube"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></a></div><figcaption><b>NIAT Pune freshers review campus life</b>Campus stories · NIAT Pune YouTube<br><a href="https://www.youtube.com/watch?v=CO737Z_ezB0">Watch on YouTube</a></figcaption></figure></div>
-    <p class="note">On the live site these play in place with YouTube's player and real thumbnails. The preview here uses stand-in images because it cannot load YouTube.</p>
+    <div class="reels films"><figure class="reel"><div class="ph"><img src="img/interview.jpg" alt="" width="435" height="718" loading="lazy" decoding="async"><a class="play" href="https://www.youtube.com/watch?v=E7lAGr8AEkU" aria-label="Watch Jackie Shroff sent Thugesh a legal notice on YouTube"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></a></div><figcaption><b>Jackie Shroff sent Thugesh a legal notice</b>Podcast shoot with Thugesh · NIAT Pune YouTube<br><a href="https://www.youtube.com/watch?v=E7lAGr8AEkU">Watch on YouTube</a></figcaption></figure><figure class="reel"><div class="ph"><img src="img/stage.jpg" alt="" width="429" height="718" loading="lazy" decoding="async"><a class="play" href="https://www.youtube.com/watch?v=b5keoR-jWU4" aria-label="Watch NIAT exposed: watch this before you join on YouTube"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></a></div><figcaption><b>NIAT exposed: watch this before you join</b>Brand film · NIAT Pune YouTube<br><a href="https://www.youtube.com/watch?v=b5keoR-jWU4">Watch on YouTube</a></figcaption></figure><figure class="reel"><div class="ph"><img src="img/camera.jpg" alt="" width="436" height="718" loading="lazy" decoding="async"><a class="play" href="https://www.youtube.com/watch?v=CO737Z_ezB0" aria-label="Watch NIAT Pune freshers review campus life on YouTube"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></a></div><figcaption><b>NIAT Pune freshers review campus life</b>Campus stories · NIAT Pune YouTube<br><a href="https://www.youtube.com/watch?v=CO737Z_ezB0">Watch on YouTube</a></figcaption></figure></div>
+    <p class="note">On the live site these play in place with YouTube’s player and real thumbnails. The preview here uses stand-in images because it cannot load YouTube.</p>
   </div>
 </dialog>
 
@@ -459,7 +471,9 @@ em{font-style:italic;font-weight:300}
 
   /* project dialogs */
   document.querySelectorAll('[data-open]').forEach(function(b){ b.addEventListener('click', function(){ var d = document.getElementById(b.getAttribute('data-open')); if(!d) return; if(d.showModal) d.showModal(); else d.setAttribute('open','');
-    d.querySelectorAll('video[data-src]').forEach(function(v){ if(!v.getAttribute('src')){ v.src = v.getAttribute('data-src'); } v.play().catch(function(){}); }); }); });
+    var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    d.querySelectorAll('video[data-src]').forEach(function(v){ if(!v.getAttribute('src')){ v.src = v.getAttribute('data-src'); } if(!still){ v.play().catch(function(){}); } }); }); });
+  document.querySelectorAll('.reel video').forEach(function(v){ v.addEventListener('click', function(){ if(v.paused){ v.play().catch(function(){}); } else { v.pause(); } }); });
   document.querySelectorAll('dialog.proj').forEach(function(d){
     d.querySelectorAll('[data-close]').forEach(function(c){ c.addEventListener('click', function(){ d.close(); }); });
     d.addEventListener('click', function(e){ if(e.target===d) d.close(); });
