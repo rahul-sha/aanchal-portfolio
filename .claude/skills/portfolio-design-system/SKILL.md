@@ -11,6 +11,7 @@ This site has a design system. Read `DESIGN.md` at the repo root before changing
 
 1. Every colour, font size, spacing step, radius, and duration is a CSS custom property in the `:root` block at the top of `index.html`. Use the token in rules. Never write a raw hex value, pixel size, or duration that a token already covers.
 2. A new value needs a new token in `:root` and a matching row in `DESIGN.md`, in the same change.
+   The design system also lives in Claude as a Design System artifact (https://claude.ai/artifact/2iPwsVBSqA9gs8nkaYC5g1). When a token, pattern, or rule changes here, update that artifact's `project/tokens.json` and `project/README.md` in the same piece of work, so the three copies never drift.
 3. Text and background come as a pair. A new panel colour class sets both. Check the pairing against the AA list in `DESIGN.md`, and run the axe scan from `README.md` before opening a pull request.
 4. There is no dark mode. Do not add `prefers-color-scheme: dark` rules. The page sets `color-scheme: light` on purpose.
 5. Motion uses `--ease` and the `--dur-*` tokens and must stop under `prefers-reduced-motion: reduce`.
@@ -21,3 +22,4 @@ This site has a design system. Read `DESIGN.md` at the repo root before changing
 - Tokens: `:root` in `index.html`
 - Reference and pattern catalogue: `DESIGN.md`
 - Three.js colours: hex literals in `scene.js`, kept in step with the palette by hand
+- The copy inside Claude: https://claude.ai/artifact/2iPwsVBSqA9gs8nkaYC5g1 (tokens, brand book, component previews)

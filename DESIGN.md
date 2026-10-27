@@ -2,6 +2,8 @@
 
 The reference for how the portfolio looks and behaves. Every value here is a CSS custom property declared once in the `:root` block at the top of `index.html`. Rules in the stylesheet use the token, never the raw value, so a change made in `:root` reaches the whole site.
 
+A copy of this system lives inside Claude as a Design System artifact at https://claude.ai/artifact/2iPwsVBSqA9gs8nkaYC5g1, with the same tokens, this guidance as its brand book, and live component previews. Keep the two in step: a change here is also a change there.
+
 The site is light only. There is no dark-mode variant: an earlier attempt remapped the backgrounds while the ink-coloured text and icons stayed put, and the result was unreadable. `color-scheme: light` is set on purpose.
 
 ## Colour
