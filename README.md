@@ -36,3 +36,7 @@ Before merging a change, run Lighthouse and an axe scan against a local server (
 ## Deploy
 
 The site is static, so Vercel serves it as it is: import the repository, keep the defaults, and deploy.
+
+## Releasing a script change
+
+`app.js` and `scene.js` are cached by browsers for an hour (`vercel.json`). When you change either file, bump the `?v=` value on its `<script>` tag in `index.html` so every visitor gets the new code on their next visit rather than after the cache expires. Images and videos are cached for a year; give a changed media file a new name.
