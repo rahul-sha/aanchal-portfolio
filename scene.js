@@ -1,6 +1,6 @@
 function startScenes(){
   if(!window.THREE){ return; }
-  var IMG = ['img/interview.webp','img/camera.webp','img/stage.webp','img/portrait.webp'];
+  var IMG = ['img/interview.webp','img/camera.webp','img/stage.webp','img/portrait.webp','img/screen.webp'];
   var loader = new THREE.TextureLoader();
   var textures = IMG.map(function(p){ var t = loader.load(p); t.minFilter = THREE.LinearFilter; return t; });
   var wallTex = ['media/r1-poster.webp','media/r2-poster.webp','media/r3-poster.webp','media/r4-poster.webp','media/r5-poster.webp','img/interview.webp','img/stage.webp'].map(function(p){ var t = loader.load(p); t.minFilter = THREE.LinearFilter; return t; });
@@ -54,8 +54,8 @@ function startScenes(){
     var pole = new THREE.Mesh(new THREE.CylinderGeometry(0.03,0.03,2.6), mat(0x9A95B5)); pole.position.set(1.8,1.3,-1.2); scene.add(pole);
     var monG = new THREE.Group(); monG.position.set(3.4,0,-2.6); monG.rotation.y=-0.5; scene.add(monG);
     var desk = new THREE.Mesh(new THREE.BoxGeometry(2.4,0.08,1.1), mat(0x3B3270)); desk.position.y=1.1; monG.add(desk);
-    var screen = new THREE.Mesh(new THREE.PlaneGeometry(1.8,1.05), new THREE.MeshBasicMaterial({map:textures[1]})); screen.position.set(0,1.85,-0.2); monG.add(screen);
-    var bezel = new THREE.Mesh(new THREE.BoxGeometry(1.9,1.15,0.06), mat(0x100C24)); bezel.position.set(0,1.85,-0.24); monG.add(bezel);
+    var screen = new THREE.Mesh(new THREE.PlaneGeometry(1.8,0.945), new THREE.MeshBasicMaterial({map:textures[4]})); screen.position.set(0,1.85,-0.2); monG.add(screen);
+    var bezel = new THREE.Mesh(new THREE.BoxGeometry(1.9,1.045,0.06), mat(0x100C24)); bezel.position.set(0,1.85,-0.24); monG.add(bezel);
     var micG = new THREE.Group(); micG.position.set(0.3,0,1.6); scene.add(micG);
     var stand = new THREE.Mesh(new THREE.CylinderGeometry(0.025,0.025,1.5), mat(0x9A95B5)); stand.position.y=0.75; micG.add(stand);
     var micHead = new THREE.Mesh(new THREE.SphereGeometry(0.16,16,16), mat(0xD2CCE6)); micHead.position.y=1.6; micG.add(micHead);
@@ -66,7 +66,7 @@ function startScenes(){
     var posterFrame = new THREE.Mesh(new THREE.PlaneGeometry(1.56,1.91), new THREE.MeshBasicMaterial({color:SUN})); posterFrame.position.set(0.4,2.6,-4.96); scene.add(posterFrame);
     var hs = [
       {p:[-2.2,2.9,0.4], t:'Brand films', d:'15+ campus events and NIAT brand films, produced end to end.'},
-      {p:[1.8,3.5,-1.2], t:'Creator campaigns', d:'Marathi creator-led campaign: 6M+ views in two months.'},
+      {p:[1.8,3.5,-1.2], t:'Creator campaigns', d:'Regional creator-led campaign: 6M+ views in two months.'},
       {p:[3.4,2.7,-2.6], t:'Student Creator Program', d:'15+ creators, 200+ UGC videos, 500K+ views.'},
       {p:[0.3,2.1,1.6], t:'On camera', d:'Hosting, interviews, and a Short that hit 2M views in a day.'},
       {p:[-3.2,3.4,-4.6], t:'Strategy', d:'L’Oréal Luxe Takami launch plan; 60+ brands in Singapore.'}
@@ -97,8 +97,8 @@ function startScenes(){
     var cam = new THREE.PerspectiveCamera(42, 1, .1, 60); cam.position.set(0,0,11);
     scene.add(new THREE.AmbientLight(0xffffff, 1));
     var creators = [
-      ['Siddhant Naik','Marathi creator campaign · comedy'],['Sahil Gaikwad','Marathi creator campaign · lifestyle'],['Aditya Dere','Marathi creator campaign · campus life'],
-      ['Mh19_Comedian','Marathi creator campaign · regional comedy'],['Gauravmalode5','Marathi creator campaign · vlog'],['Student creator','Student Creator Program · day in the life'],
+      ['Siddhant Naik','Regional creator campaign · comedy'],['Sahil Gaikwad','Regional creator campaign · lifestyle'],['Aditya Dere','Regional creator campaign · campus life'],
+      ['Mh19_Comedian','Regional creator campaign · regional comedy'],['Gauravmalode5','Regional creator campaign · vlog'],['Student creator','Student Creator Program · day in the life'],
       ['Student creator','Student Creator Program · hostel tour'],['Student creator','Student Creator Program · placement story'],['Brand UGC','Singapore retention campaign · 150 purchases'],
       ['Brand UGC','Seasonal launch content, Singapore'],['Creator workshop','L’Oréal Luxe · 150+ creators briefed'],['Student creator','Student Creator Program · exam week']
     ];
