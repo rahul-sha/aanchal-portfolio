@@ -340,19 +340,49 @@ function startScenes(){
     wall.position.x = 1.6;
     // rounded phone tiles: a shape geometry with its UVs pointed at one atlas cell
     function roundedRect(w, h, rad){ var s = new THREE.Shape(), x = -w/2, y = -h/2; s.moveTo(x+rad, y); s.lineTo(x+w-rad, y); s.quadraticCurveTo(x+w, y, x+w, y+rad); s.lineTo(x+w, y+h-rad); s.quadraticCurveTo(x+w, y+h, x+w-rad, y+h); s.lineTo(x+rad, y+h); s.quadraticCurveTo(x, y+h, x, y+h-rad); s.lineTo(x, y+rad); s.quadraticCurveTo(x, y, x+rad, y); return s; }
-    function tileGeom(w, h, rad, cell){ var g = new THREE.ShapeGeometry(roundedRect(w, h, rad), 6); if(cell !== undefined){ var cx = cell % ATLAS_COLS, cy = Math.floor(cell / ATLAS_COLS), uv = g.attributes.uv, pos = g.attributes.position; for(var i=0;i<uv.count;i++){ uv.setXY(i, (cx + (pos.getX(i)/w + 0.5)) / ATLAS_COLS, 1 - (cy + 1 - (pos.getY(i)/h + 0.5)) / ATLAS_ROWS); } uv.needsUpdate = true; } return g; }
-    var cellGeoms = []; for(var c=0;c<ATLAS_COLS*ATLAS_ROWS;c++){ cellGeoms.push(tileGeom(1.25, 2.2, 0.2, c)); }
-    var bg = tileGeom(1.37, 2.32, 0.24);
+    function tileGeom(w, h, rad, cell, cols, rows){ var g = new THREE.ShapeGeometry(roundedRect(w, h, rad), 6); if(cell !== undefined){ var cx = cell % cols, cy = Math.floor(cell / cols), uv = g.attributes.uv, pos = g.attributes.position; for(var i=0;i<uv.count;i++){ uv.setXY(i, (cx + (pos.getX(i)/w + 0.5)) / cols, 1 - (cy + 1 - (pos.getY(i)/h + 0.5)) / rows); } uv.needsUpdate = true; } return g; }
+    var cellGeoms = []; for(var c=0;c<ATLAS_COLS*ATLAS_ROWS;c++){ cellGeoms.push(tileGeom(1.25, 2.2, 0.2, c, ATLAS_COLS, ATLAS_ROWS)); }
+    var bg = tileGeom(1.29, 2.24, 0.22); // a thin 0.02 rim around each tile
+    /* Icon tiles: flat palette cards with a line drawing of a piece of kit, drawn once into a 4 x 3 canvas atlas. */
+    var ICONS = [
+      ['Camera','#2B4BFF', function(c){ c.beginPath(); rr(c,-70,-40,140,96,18); c.stroke(); c.beginPath(); c.arc(0,8,30,0,Math.PI*2); c.stroke(); c.beginPath(); rr(c,-30,-62,50,24,8); c.stroke(); }],
+      ['Microphone','#DCCFFF', function(c){ c.beginPath(); rr(c,-26,-78,52,112,26); c.stroke(); c.beginPath(); c.arc(0,8,50,0.15,Math.PI-0.15); c.stroke(); c.beginPath(); c.moveTo(0,58); c.lineTo(0,86); c.moveTo(-30,86); c.lineTo(30,86); c.stroke(); }],
+      ['Ring light','#FF5E4D', function(c){ c.beginPath(); c.arc(0,-14,58,0,Math.PI*2); c.stroke(); c.beginPath(); c.arc(0,-14,34,0,Math.PI*2); c.stroke(); c.beginPath(); c.moveTo(0,44); c.lineTo(0,90); c.moveTo(-34,90); c.lineTo(34,90); c.stroke(); }],
+      ['Clapperboard','#D9F55B', function(c){ c.beginPath(); rr(c,-70,-30,140,100,12); c.stroke(); c.beginPath(); c.moveTo(-70,-30); c.lineTo(70,-30); c.stroke(); c.save(); c.translate(-62,-36); c.rotate(-0.22); c.beginPath(); rr(c,0,-30,140,30,8); c.stroke(); for(var i=1;i<5;i++){ c.beginPath(); c.moveTo(i*28,-30); c.lineTo(i*28-14,0); c.stroke(); } c.restore(); }],
+      ['Phone','#BFE3FF', function(c){ c.beginPath(); rr(c,-44,-84,88,168,20); c.stroke(); c.beginPath(); c.moveTo(-14,-64); c.lineTo(14,-64); c.stroke(); c.beginPath(); c.arc(0,62,6,0,Math.PI*2); c.fill(); }],
+      ['Headphones','#0E0E1A', function(c){ c.beginPath(); c.arc(0,10,70,Math.PI,0); c.stroke(); c.beginPath(); rr(c,-82,10,30,56,12); c.stroke(); c.beginPath(); rr(c,52,10,30,56,12); c.stroke(); }],
+      ['Play','#FF5E4D', function(c){ c.beginPath(); c.arc(0,0,74,0,Math.PI*2); c.stroke(); c.beginPath(); c.moveTo(-20,-36); c.lineTo(36,0); c.lineTo(-20,36); c.closePath(); c.fill(); }],
+      ['Likes','#DCCFFF', function(c){ c.beginPath(); c.moveTo(0,60); c.bezierCurveTo(-90,0,-60,-70,0,-30); c.bezierCurveTo(60,-70,90,0,0,60); c.closePath(); c.stroke(); }],
+      ['Comments','#2B4BFF', function(c){ c.beginPath(); rr(c,-72,-60,144,100,28); c.stroke(); c.beginPath(); c.moveTo(-30,40); c.lineTo(-44,76); c.lineTo(2,40); c.stroke(); }],
+      ['Hashtag','#D9F55B', function(c){ c.beginPath(); c.moveTo(-26,-70); c.lineTo(-44,70); c.moveTo(30,-70); c.lineTo(12,70); c.moveTo(-66,-24); c.lineTo(70,-24); c.moveTo(-72,26); c.lineTo(64,26); c.stroke(); }],
+      ['Tripod','#BFE3FF', function(c){ c.beginPath(); rr(c,-30,-84,60,40,10); c.stroke(); c.beginPath(); c.moveTo(0,-44); c.lineTo(0,20); c.moveTo(0,20); c.lineTo(-54,90); c.moveTo(0,20); c.lineTo(54,90); c.moveTo(0,20); c.lineTo(0,90); c.stroke(); }],
+      ['Studio light','#0E0E1A', function(c){ c.beginPath(); c.moveTo(-60,-70); c.lineTo(60,-70); c.lineTo(36,10); c.lineTo(-36,10); c.closePath(); c.stroke(); c.beginPath(); c.moveTo(0,10); c.lineTo(0,90); c.moveTo(-34,90); c.lineTo(34,90); c.stroke(); for(var i=-1;i<=1;i++){ c.beginPath(); c.moveTo(i*30,30); c.lineTo(i*40,60); c.stroke(); } }]
+    ];
+    function rr(c,x,y,w,h,r){ c.moveTo(x+r,y); c.lineTo(x+w-r,y); c.quadraticCurveTo(x+w,y,x+w,y+r); c.lineTo(x+w,y+h-r); c.quadraticCurveTo(x+w,y+h,x+w-r,y+h); c.lineTo(x+r,y+h); c.quadraticCurveTo(x,y+h,x,y+h-r); c.lineTo(x,y+r); c.quadraticCurveTo(x,y,x+r,y); }
+    var ICON_COLS = 4, ICON_ROWS = 3, IW = 256, IH = 450;
+    var iconCanvas = document.createElement('canvas'); iconCanvas.width = IW*ICON_COLS; iconCanvas.height = IH*ICON_ROWS;
+    (function(){ var c = iconCanvas.getContext('2d'); ICONS.forEach(function(ic, i){ var x0 = (i%ICON_COLS)*IW, y0 = Math.floor(i/ICON_COLS)*IH; c.fillStyle = ic[1]; c.fillRect(x0,y0,IW,IH); var dark = ic[1]==='#2B4BFF'||ic[1]==='#FF5E4D'||ic[1]==='#0E0E1A'; c.strokeStyle = c.fillStyle = dark ? '#F6F3EC' : '#0E0E1A'; c.lineWidth = 9; c.lineCap = 'round'; c.lineJoin = 'round'; c.save(); c.translate(x0+IW/2, y0+IH/2-20); ic[2](c); c.restore(); c.font = '600 22px "Albert Sans", system-ui, sans-serif'; c.textAlign = 'center'; c.fillText(ic[0], x0+IW/2, y0+IH-70); }); })();
+    var iconTex = new THREE.CanvasTexture(iconCanvas); iconTex.minFilter = THREE.LinearFilter;
+    var iconGeoms = []; for(var ci=0; ci<ICONS.length; ci++){ iconGeoms.push(tileGeom(1.25, 2.2, 0.2, ci, ICON_COLS, ICON_ROWS)); }
     var tints = [0xFFFFFF, 0xE9E2FF, 0xDDEBFF, 0xFFF1EC, 0xF2F7DE];
-    var tiles = [], n=0;
+    var tiles = [], n=0, nIcon=0;
     for(var y=0;y<ROWS;y++) for(var x=0;x<COLS;x++){
       var g = new THREE.Group();
       var b = new THREE.Mesh(bg, new THREE.MeshBasicMaterial({color:0x1F1848})); b.position.z=-0.01; g.add(b);
-      var cell = (x + y*4 + Math.floor(y/2)) % (ATLAS_COLS*ATLAS_ROWS); // 24 frames over 54 tiles, no two neighbours alike
-      var m = new THREE.Mesh(cellGeoms[cell], new THREE.MeshBasicMaterial({map:wallAtlas, color:tints[(x*2+y)%tints.length], transparent:true, opacity:0.55+((x+y)%3)*0.15})); g.add(m);
-      var bar = new THREE.Mesh(new THREE.PlaneGeometry(0.9,0.07), new THREE.MeshBasicMaterial({color:barCols[(x+y)%barCols.length]})); bar.position.set(0,-0.95,0.01); bar.scale.x = 0.3+((x*5+y*3)%7)/10; g.add(bar);
+      var isIcon = (x + 2*y) % 3 === 0; // every third tile is a kit card, never two side by side
+      var m, cap;
+      if(isIcon){
+        var ic = (nIcon++) % ICONS.length; // 18 kit cards cycle through 12 icons, so a repeat sits four rows away
+        m = new THREE.Mesh(iconGeoms[ic], new THREE.MeshBasicMaterial({map:iconTex, transparent:true, opacity:0.8})); g.add(m);
+        cap = [ICONS[ic][0], 'Student Creator Program · 15+ creators, 200+ videos'];
+      } else {
+        var cell = (x + y*4 + Math.floor(y/2)) % (ATLAS_COLS*ATLAS_ROWS); // 24 frames spread so no two neighbours match
+        m = new THREE.Mesh(cellGeoms[cell], new THREE.MeshBasicMaterial({map:wallAtlas, color:tints[(x*2+y)%tints.length], transparent:true, opacity:0.55+((x+y)%3)*0.15})); g.add(m);
+        var bar = new THREE.Mesh(new THREE.PlaneGeometry(0.9,0.07), new THREE.MeshBasicMaterial({color:barCols[(x+y)%barCols.length]})); bar.position.set(0,-0.95,0.01); bar.scale.x = 0.3+((x*5+y*3)%7)/10; g.add(bar);
+        cap = creators[cell % ATLAS_COLS];
+      }
       g.position.set((x-(COLS-1)/2)*GAPX, (y-(ROWS-1)/2)*GAPY + (x%2)*1.1, 0);
-      g.userData = { base: g.position.clone(), c: creators[cell % ATLAS_COLS], mesh:m }; n++;
+      g.userData = { base: g.position.clone(), c: cap, mesh:m }; n++;
       wall.add(g); tiles.push(g);
     }
     var shade = new THREE.Mesh(new THREE.PlaneGeometry(14, 20), new THREE.MeshBasicMaterial({color:INK, transparent:true, opacity:0.55})); shade.position.set(-7.5,0,1.5); scene.add(shade);
