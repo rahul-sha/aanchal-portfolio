@@ -4,10 +4,13 @@ A single-page portfolio for Aanchal Sharma, brand and content strategist. Plain 
 
 ## Files
 
-- `index.html`: the whole site, including styles and scripts
+- `index.html`: the page markup and styles
+- `app.js`: page behaviour (reveals, count-ups, panel deck, project dialogs)
+- `scene.js`: the two Three.js stages, built after the page has painted; the creator wall is built only when scrolled near
 - `three.min.js`: Three.js r128, bundled locally
-- `img/`: photos used in the page
-- `media/`: reel posters and 8-second muted preview loops
+- `img/`: photos used in the page (WebP)
+- `media/`: reel posters (WebP) and 8-second muted preview loops
+- `vercel.json`: cache headers for the static assets
 - `Aanchal-Sharma-CV.pdf`: the CV served by the Download CV button
 - `.claude/skills/`: agent skills used when working on this repository with Claude Code
 
@@ -20,6 +23,10 @@ python3 -m http.server 8000
 ```
 
 Then open http://localhost:8000 in a browser.
+
+## Checks
+
+Before merging a change, run Lighthouse and an axe scan against a local server (the `webapp-testing` skill describes the Playwright setup). The site should keep accessibility, best practices, and SEO at 100 and zero axe violations, including colour contrast at WCAG AA.
 
 ## Deploy
 
