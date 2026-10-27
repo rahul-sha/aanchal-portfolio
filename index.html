@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Aanchal Sharma, brand and content strategist. Creator campaigns, UGC programmes, brand films, and launch strategy.">
+<title>Aanchal Sharma, brand and content strategist</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Albert+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a deck of full-height panels. Each panel is sticky; the next one slides up over it while the one beneath eases back (scale, darken). Two panels are WebGL stages (studio hero, creator wall). */
+:root{
+  --ink:#0E0E1A; --cream:#F6F3EC; --blue:#2B4BFF; --coral:#FF5E4D; --lime:#D9F55B; --lilac:#DCCFFF; --sky:#BFE3FF;
+  --bg:var(--cream); --fg:var(--ink); --muted:#5E5B6B; --line:#D9D4CA; --stage-fg:#F6F3EC;
+  --display:'Fraunces',Georgia,'Times New Roman',serif;
+  --body:'Albert Sans',system-ui,-apple-system,Segoe UI,sans-serif;
+  --ease:cubic-bezier(.22,.8,.2,1);
+  --radius:28px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0B0B14;--fg:#F3F0EA;--muted:#A6A2B4;--line:#2A2838;--cream:#15141F;--lilac:#2A2340;--sky:#1C2A3A;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0B0B14;--fg:#F3F0EA;--muted:#A6A2B4;--line:#2A2838;--cream:#15141F;--lilac:#2A2340;--sky:#1C2A3A;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{background:var(--ink);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.5;padding:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--ink)}
+.gutter{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1240px;margin:0 auto;width:100%}
+a{color:inherit}
+a:focus-visible,button:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+h1,h2,h3{font-family:var(--display);font-weight:300;letter-spacing:-.025em;text-wrap:balance;font-variation-settings:"SOFT" 40,"WONK" 1}
+em{font-style:italic;font-weight:300}
+.eyebrow{font-family:var(--body);font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+
+/* nav floats over the deck */
+.nav{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);z-index:9;pointer-events:none}
+.nav .wrap{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;padding-block:14px}
+.nav .pillbar{pointer-events:auto;display:flex;flex-wrap:wrap;gap:4px;align-items:center;background:rgba(14,14,26,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(246,243,236,.14);border-radius:999px;padding:6px}
+.nav a{color:#F6F3EC;text-decoration:none;font-size:14px;font-weight:500;padding:9px 14px;border-radius:999px;min-height:40px;display:inline-flex;align-items:center}
+.nav a:hover{background:rgba(246,243,236,.12)}
+.nav a.brand{font-family:var(--display);font-weight:400;font-size:19px;letter-spacing:-.02em;padding-left:16px}
+.nav a.cv{background:var(--lime);color:var(--ink);font-weight:600}
+.progress{position:fixed;left:0;top:env(safe-area-inset-top,0px);height:3px;width:0;background:var(--coral);z-index:9}
+
+/* the deck */
+.deck{position:relative}
+.panel{position:sticky;top:0;min-height:100vh;min-height:100svh;overflow:hidden;border-radius:var(--radius) var(--radius) 0 0;transform-origin:50% 0;will-change:transform;display:flex;flex-direction:column;justify-content:center}
+.panel:first-child{border-radius:0}
+.panel .veil{position:absolute;inset:0;background:#0E0E1A;opacity:0;pointer-events:none;z-index:4;transition:none}
+.panel .inner{position:relative;z-index:2;width:100%;padding-block:clamp(72px,10vh,120px) clamp(48px,8vh,96px)}
+.stage{background:var(--ink);color:var(--stage-fg);touch-action:pan-y}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0}
+.stage::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(14,14,26,.86) 0%,rgba(14,14,26,.5) 40%,rgba(14,14,26,0) 68%)}
+@media (max-width:640px){.stage::after{background:linear-gradient(180deg,rgba(14,14,26,.9) 0%,rgba(14,14,26,.55) 55%,rgba(14,14,26,.15) 100%)}}
+.stage .inner{z-index:2;pointer-events:none;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:space-between}
+.stage .inner .btns,.stage .inner a{pointer-events:auto}
+.stage h1,.stage h2{margin:14px 0 0;font-size:clamp(44px,7.4vw,124px);line-height:.94;max-width:12ch}
+.stage h2{font-size:clamp(40px,6vw,100px)}
+.stage .w{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.08em;margin-bottom:-.08em}
+.stage .w span{display:inline-block;transform:translateY(110%);animation:rise 1s var(--ease) forwards}
+.stage .hi{color:var(--lime);font-style:italic}
+.stage .hi3{color:var(--sky);font-style:italic}
+.stage p.lead{margin:24px 0 0;max-width:46ch;font-size:clamp(16px,1.35vw,19px);opacity:.92}
+.stage .foot{display:flex;flex-wrap:wrap;gap:10px 24px;align-items:end;justify-content:space-between;font-size:13px;opacity:.8;margin-top:32px}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+.btn{font:inherit;font-weight:600;font-size:15px;min-height:48px;padding:0 22px;border-radius:999px;border:1px solid transparent;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:10px;transition:transform .3s var(--ease)}
+.btn:hover{transform:translateY(-2px)}
+.btn.p{background:var(--lime);color:var(--ink)}
+.btn.g{background:transparent;color:var(--stage-fg);border-color:rgba(246,243,236,.45)}
+.card{z-index:5;position:absolute;right:max(16px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 84px);max-width:300px;background:var(--lime);color:var(--ink);border-radius:16px;padding:16px 18px;font-size:14px;line-height:1.45;pointer-events:none;animation:pop .4s var(--ease)}
+.card b{display:block;font-family:var(--display);font-weight:400;font-size:22px;line-height:1.1;margin-bottom:4px}
+@keyframes rise{to{transform:translateY(0)}}
+@keyframes pop{from{transform:translateY(8px) scale(.96);opacity:0}}
+
+/* reveals */
+.rv{opacity:0;transform:translateY(28px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
+.rv.in{opacity:1;transform:none}
+.rv-stagger>*{opacity:0;transform:translateY(24px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.rv-stagger.in>*{opacity:1;transform:none}
+.rv-stagger.in>*:nth-child(2){transition-delay:.1s}.rv-stagger.in>*:nth-child(3){transition-delay:.2s}.rv-stagger.in>*:nth-child(4){transition-delay:.3s}.rv-stagger.in>*:nth-child(5){transition-delay:.4s}.rv-stagger.in>*:nth-child(6){transition-delay:.5s}
+
+/* colour panels */
+.p-blue{background:var(--blue);color:#fff}
+.p-cream{background:var(--cream);color:var(--fg)}
+.p-lilac{background:var(--lilac);color:var(--fg)}
+.p-coral{background:var(--coral);color:#fff}
+.sec-head{display:flex;flex-wrap:wrap;gap:16px 40px;align-items:end;justify-content:space-between;margin-bottom:44px}
+.sec-head h2{margin:0;font-size:clamp(40px,5.6vw,84px);line-height:.95}
+.sec-head p{margin:0;max-width:40ch;opacity:.8}
+.num{font-family:var(--display);font-weight:300;font-size:14px;letter-spacing:.1em;opacity:.7;margin-bottom:12px;display:block}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px 24px;align-items:end}
+.stat .n{font-family:var(--display);font-weight:300;font-size:clamp(56px,7vw,112px);line-height:.9;letter-spacing:-.05em;font-variant-numeric:tabular-nums}
+.stat .n .s{color:var(--lime);font-style:italic}
+.stat .l{margin-top:14px;font-size:14px;opacity:.85;max-width:24ch;padding-top:12px;border-top:1px solid rgba(255,255,255,.3)}
+.p-blue .lede{font-family:var(--display);font-weight:300;font-size:clamp(24px,2.6vw,36px);line-height:1.2;max-width:28ch;margin:0 0 56px}
+
+.work{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:40px 24px}
+.work article{min-width:0}
+.thumb{position:relative;aspect-ratio:4/3;max-width:100%;background:var(--ink);overflow:hidden;border-radius:20px}
+.thumb img{position:absolute;inset:-8% 0;width:100%;height:116%;object-fit:cover;opacity:.9;will-change:transform}
+.thumb .ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--ink)}
+.thumb .ph .big{font-family:var(--display);font-weight:300;font-size:80px;line-height:1;letter-spacing:-.05em}
+.thumb .ph .lab{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;opacity:.75}
+.thumb button{position:absolute;left:16px;bottom:16px;width:52px;height:52px;border-radius:50%;border:none;background:var(--cream);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .3s var(--ease)}
+.thumb button:hover{transform:scale(1.08)}
+.tag{position:absolute;right:14px;top:14px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:rgba(246,243,236,.92);color:var(--ink);border-radius:999px;padding:7px 11px}
+.work h3{margin:18px 0 0;font-weight:400;font-size:26px;line-height:1.1;display:flex;justify-content:space-between;gap:12px}
+.work h3 span{font-size:13px;color:var(--muted);padding-top:8px;font-family:var(--body)}
+.work p{margin:8px 0 0;color:var(--muted);font-size:15px;max-width:40ch}
+.work .r{color:var(--fg);font-weight:600}
+
+.about{display:flex;flex-wrap:wrap;gap:56px;align-items:center}
+.about .pic{flex:0 1 420px;width:420px;max-width:100%;position:relative;overflow:hidden;border-radius:24px}
+.about img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;max-width:100%;will-change:transform}
+.about .badge{position:absolute;right:16px;bottom:16px;width:116px;height:116px;border-radius:50%;background:var(--ink);color:var(--lime);display:flex;align-items:center;justify-content:center;text-align:center;font-family:var(--display);font-style:italic;font-weight:300;font-size:16px;line-height:1.1;padding:12px;animation:spin 20s linear infinite}
+.about div.txt{flex:1 1 380px;min-width:0}
+.about h2{margin:14px 0 0;font-size:clamp(36px,4.8vw,68px);line-height:.98}
+.about p{margin:18px 0 0;font-size:18px;max-width:56ch}
+.about .pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.pill{border-radius:999px;padding:9px 14px;font-size:13px;font-weight:600;background:var(--ink);color:var(--cream)}
+.pill.b{background:var(--blue);color:#fff}.pill.c{background:var(--coral);color:#fff}.pill.l{background:var(--lime);color:var(--ink)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.xp{border-top:1px solid var(--fg)}
+.xp .row{display:flex;flex-wrap:wrap;gap:6px 32px;padding:26px 0;border-bottom:1px solid var(--line);transition:padding-left .4s var(--ease)}
+.xp .row:hover{padding-left:12px}
+.xp .y{flex:0 0 180px;font-size:13px;font-weight:600;letter-spacing:.08em;color:var(--muted);padding-top:8px}
+.xp .t{flex:1 1 280px;font-family:var(--display);font-weight:400;font-size:26px;line-height:1.15}
+.xp .w{flex:0 1 240px;color:var(--muted);font-size:15px;padding-top:6px}
+
+.p-coral h2{margin:0;font-size:clamp(48px,8vw,128px);line-height:.9;max-width:11ch}
+.p-coral h2 em{color:var(--ink)}
+.p-coral .links{display:flex;flex-wrap:wrap;gap:12px 36px;margin-top:44px;font-size:18px;font-weight:600}
+.p-coral .links a{color:#fff;text-decoration-thickness:2px;text-underline-offset:5px}
+.p-coral .copy{margin-top:72px;font-size:12px;opacity:.85}
+.p-coral .blob{position:absolute;right:-140px;bottom:-200px;width:520px;height:520px;border-radius:50%;background:var(--lime);opacity:.95;z-index:1}
+
+
+/* project dialog */
+.proj{border:none;padding:0;background:transparent;max-width:min(1200px,calc(100vw - 32px));width:100%;max-height:calc(100vh - 32px);color:var(--fg)}
+.proj::backdrop{background:rgba(14,14,26,.82);backdrop-filter:blur(10px)}
+.proj .box{background:var(--cream);border-radius:28px;padding:clamp(20px,3vw,40px);overflow:auto;max-height:calc(100vh - 32px);position:relative}
+.proj .close{position:absolute;right:16px;top:16px;width:44px;height:44px;border-radius:50%;border:none;background:var(--ink);color:var(--cream);cursor:pointer;font-size:20px;line-height:1}
+.proj .head{display:flex;flex-wrap:wrap;gap:12px 40px;align-items:end;justify-content:space-between;margin-bottom:24px;padding-right:56px}
+.proj h2{margin:8px 0 0;font-size:clamp(32px,4vw,56px);line-height:1}
+.proj .meta{display:flex;flex-wrap:wrap;gap:8px 24px;font-size:14px;color:var(--muted)}
+.proj .meta b{color:var(--fg);font-weight:600}
+.proj p.sum{margin:0 0 24px;max-width:70ch;font-size:16px}
+.reels{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+.reel{min-width:0}
+.reel .ph{position:relative;aspect-ratio:9/16;border-radius:16px;overflow:hidden;background:var(--ink)}
+.reel video,.reel img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.reel .play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:48px;height:48px;border-radius:50%;border:none;background:rgba(246,243,236,.92);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.reel figcaption{margin-top:10px;font-size:14px}
+.reel figcaption b{display:block;font-family:var(--display);font-weight:400;font-size:18px}
+.reel figcaption a{font-size:12px;color:var(--muted)}
+.ugcgrid{display:grid;grid-template-columns:1.1fr 1fr;gap:16px 24px;align-items:stretch}
+.ugcgrid .full{grid-column:1/-1}
+.ugcgrid .hero{background:var(--blue);color:#fff;border-radius:20px;padding:28px;min-height:300px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.ugcgrid .hero .word{font-family:var(--display);font-weight:300;font-size:clamp(44px,6vw,84px);line-height:.9;letter-spacing:-.04em}
+.ugcgrid .hero .word i{color:var(--lime)}
+.ugcgrid .hero .sub{font-size:14px;opacity:.85;max-width:34ch;margin-top:20px}
+.ugcstats{display:grid;grid-template-columns:1fr;gap:12px;height:100%}
+.ugcstats > div{background:var(--ink);color:var(--cream);border-radius:16px;padding:18px 20px;display:flex;align-items:baseline;gap:16px;min-width:0}
+.ugcstats .n{font-family:var(--display);font-weight:300;font-size:clamp(32px,4vw,52px);line-height:1;letter-spacing:-.04em}
+.ugcstats .n .s{color:var(--lime);font-style:italic}
+.ugcstats .l{font-size:13px;opacity:.8}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.steps li{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start;padding:14px 16px;border-radius:14px;background:rgba(14,14,26,.05)}
+.steps .k{font-family:var(--display);font-weight:300;font-size:22px;line-height:1;color:var(--blue)}
+.steps b{display:block;font-weight:600;font-size:14px;margin-bottom:2px}
+.steps span{font-size:13px;color:var(--muted)}
+@media (max-width:720px){.ugcgrid{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.ugcgrid .hero{min-height:220px}}
+.ugcgrid .hero.lime{background:var(--lime);color:var(--ink)}
+.ugcgrid .hero.lime .word i{color:var(--blue)}
+.ugcgrid .hero.sky{background:var(--sky);color:var(--ink)}
+.ugcgrid .hero.sky .word i{color:var(--coral)}
+.ugcgrid .hero.ink{background:var(--ink);color:var(--cream)}
+.ugcstats.light > div{background:#fff;color:var(--ink);border:1px solid rgba(14,14,26,.08)}
+.ugcstats.light .n .s{color:var(--blue)}
+.brands{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.brands span{font-size:12px;padding:6px 12px;border-radius:999px;border:1px solid rgba(14,14,26,.15)}
+.proj .note{margin:24px 0 0;font-size:13px;color:var(--muted)}
+.films{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.films .ph{aspect-ratio:16/9}
+.films img{opacity:.85}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  .panel{position:relative;transform:none!important}
+  .panel .veil{display:none}
+  .rv,.rv-stagger>*{opacity:1;transform:none;transition:none}
+  .stage .w span{animation:none;transform:none}
+  .about .badge{animation:none}
+  .thumb img,.about img{transform:none!important}
+}
+@media (max-width:640px){.card{position:static;max-width:none;margin:12px 0 0}.stage .inner{justify-content:flex-start}.stage .foot{margin-top:auto;padding-top:40px}.nav .wrap{flex-wrap:nowrap;gap:8px}.nav .pillbar a:not(.brand):not(.cv){display:none}.nav a.brand{font-size:16px;padding:7px 12px}.nav a.cv{font-size:13px;padding:7px 12px;min-height:36px}.nav .pillbar{padding:4px}}
+</style>
+</head>
+<body>
+
+<nav class="nav gutter" aria-label="Main">
+  <div class="wrap">
+    <div class="pillbar"><a class="brand" href="#top">Aanchal Sharma</a></div>
+    <div class="pillbar">
+      <a href="#work">Work</a><a href="#creators">Creators</a><a href="#about">About</a><a href="#experience">Experience</a><a class="cv" href="Aanchal-Sharma-CV.pdf" target="_blank" rel="noopener">Download CV</a>
+    </div>
+  </div>
+</nav>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<div class="deck" id="deck">
+
+<header class="panel stage" id="top" data-scene="studio">
+  <canvas id="c-studio" aria-label="A small 3D studio with a camera, ring light, monitor, microphone, and whiteboard"></canvas>
+  <div class="inner gutter">
+    <div class="wrap" id="hero-text">
+      <div class="eyebrow">Content &amp; influencer strategist · Pune · Singapore · Seoul</div>
+      <h1 id="hero-h1">Where the <b class="hi">work</b> gets made.</h1>
+      <p class="lead">I'm Aanchal. For five years I've owned content end to end: brief, treatment, budget, casting, shoot, and post. 8M+ organic views, 1,762 leads, and one Short that hit 2 million views in a day.</p>
+      <div class="btns"><a class="btn p" href="#work">See the work <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></a><a class="btn g" href="#contact">Get in touch</a></div>
+    </div>
+    <div class="wrap foot"><span>Drag to look around · click a glowing marker</span><span id="studio-status">5 areas · scroll ↓</span></div>
+  </div>
+  <div class="card" id="studio-card" hidden><b id="studio-t"></b><span id="studio-d"></span></div>
+  <div class="veil"></div>
+</header>
+
+<section class="panel p-blue" id="results" aria-label="Headline results">
+  <div class="inner gutter"><div class="wrap">
+    <span class="num rv" data-rv>01 — Results</span>
+    <p class="lede rv" data-rv>Content that earns attention and then <em>moves a number</em>: views, leads, search, sales.</p>
+    <div class="stats rv-stagger" data-rv>
+      <div class="stat"><div class="n"><span data-count="8">0</span>M<span class="s">+</span></div><div class="l">organic views across YouTube and Instagram for NIAT Pune</div></div>
+      <div class="stat"><div class="n"><span data-count="1762" data-comma>0</span></div><div class="l">admission leads in Maharashtra during peak season</div></div>
+      <div class="stat"><div class="n"><span data-count="17">0</span><span class="s">x</span></div><div class="l">higher Google Search interest than a key competitor</div></div>
+      <div class="stat"><div class="n"><span data-count="200">0</span><span class="s">+</span></div><div class="l">student creator videos from 15+ creators</div></div>
+      <div class="stat"><div class="n"><span data-count="60">0</span><span class="s">+</span></div><div class="l">brands served as a content partner in Singapore</div></div>
+    </div>
+  </div></div>
+  <div class="veil"></div>
+</section>
+
+<section class="panel p-cream" id="work">
+  <div class="inner gutter"><div class="wrap">
+    <span class="num rv" data-rv>02 — Selected work</span>
+    <div class="sec-head rv" data-rv><h2>Work that <em>stops</em> the scroll</h2><p>Every video plays here on the page. Open a project for the brief, what I did, and the result.</p></div>
+    <div class="work rv-stagger" data-rv>
+      <article><div class="thumb"><img src="img/interview.jpg" alt="" data-px><span class="tag">Influencer</span><button type="button" aria-label="Open Marathi creator campaign" data-open="proj-marathi"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></button></div><h3>Marathi creator-led campaign <span>01</span></h3><p>Five Marathi creators, one admissions push for NIAT. <span class="r">6M+ views</span> across Maharashtra in two months.</p></article>
+      <article><div class="thumb" style="background:var(--blue)"><div class="ph" style="color:#fff"><span class="big" style="font-size:44px;line-height:.95">Creators<br>Program</span><span class="lab">UGC community · NIAT Pune</span></div><span class="tag">UGC</span><button type="button" aria-label="Open Student Creator Program" data-open="proj-ugc"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></button></div><h3>Student Creator Program <span>02</span></h3><p>Built Pune's student creator and UGC engine. <span class="r">15+ creators, 200+ videos, 500K+ views.</span></p></article>
+      <article><div class="thumb"><img src="img/stage.jpg" alt="" data-px><span class="tag">Production</span><button type="button" aria-label="Open brand films and events" data-open="proj-events"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></button></div><h3>Brand films &amp; events <span>03</span></h3><p>End-to-end production for <span class="r">15+ campus events</span> and NIAT brand films, with a team of three.</p></article>
+      <article><div class="thumb" style="background:var(--lime)"><div class="ph"><span class="big">2M</span><span class="lab">YouTube Short · 24 hours</span></div><span class="tag">On camera</span><button type="button" aria-label="Open the 24-hour Short" data-open="proj-short"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></button></div><h3>The 24-hour Short <span>04</span></h3><p>One Short, <span class="r">2 million views and 2,000 subscribers</span> in a single day.</p></article>
+      <article><div class="thumb" style="background:var(--blue)"><div class="ph" style="color:#fff"><span class="big" style="font-size:48px">L'Oréal Luxe</span><span class="lab">Takami launch · SEA</span></div><span class="tag">Strategy</span><button type="button" aria-label="Open Takami launch" data-open="proj-takami"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></button></div><h3>Takami launch, South-East Asia <span>05</span></h3><p>360-degree media and retail plan, five Shopee and Sephora campaigns, and a workshop for <span class="r">150+ creators</span>.</p></article>
+      <article><div class="thumb" style="background:var(--sky)"><div class="ph"><span class="big">60+</span><span class="lab">brands · Singapore</span></div><span class="tag">Brand content</span><button type="button" aria-label="Open brand content partner" data-open="proj-sg"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></button></div><h3>Brand content partner <span>06</span></h3><p>Four years of launch, seasonal, and awareness content, including a retention campaign that drove <span class="r">150 purchases</span> in two months.</p></article>
+    </div>
+  </div></div>
+  <div class="veil"></div>
+</section>
+
+<section class="panel stage" id="creators" data-scene="ugc">
+  <canvas id="c-ugc" aria-label="A wall of phone screens showing creator videos"></canvas>
+  <div class="inner gutter">
+    <div class="wrap rv" data-rv>
+      <span class="num">03 — Creators</span>
+      <h2>Turning audiences into <b class="hi3">creators.</b></h2>
+      <p class="lead">From nano and micro seeding at volume to individual macro deals. I turn communities into tribes through UGC and advocacy, then measure what it moves.</p>
+    </div>
+    <div class="wrap foot"><span>Move the pointer to tilt the wall · click any phone</span><span>15+ creators · 200+ videos · 500K+ views</span></div>
+  </div>
+  <div class="card" id="ugc-card" hidden><b id="ugc-t"></b><span id="ugc-d"></span></div>
+  <div class="veil"></div>
+</section>
+
+<section class="panel p-lilac" id="about">
+  <div class="inner gutter"><div class="wrap about">
+    <div class="pic rv" data-rv><img src="img/portrait.jpg" alt="Portrait of Aanchal Sharma" data-px><div class="badge">open to<br>new roles</div></div>
+    <div class="txt rv" data-rv>
+      <span class="num">04 — About</span>
+      <h2>Global content &amp; <em>influencer</em> strategist</h2>
+      <p>I believe good content doesn't just fill a feed. It makes people stop, feel, and remember.</p>
+      <p>I've shot, edited, and shipped hundreds of pieces, from scrappy phone-shot Reels to full brand films with production houses, for clients across India, Singapore, and South Korea. I bring creative instinct, hands-on execution, and a global perspective to every story.</p>
+      <div class="pills"><span class="pill b">NxtWave · NIAT Pune</span><span class="pill c">L'Oréal Luxe</span><span class="pill l">60+ Singapore brands</span><span class="pill">MSc Digital Marketing, SUSS</span></div>
+    </div>
+  </div></div>
+  <div class="veil"></div>
+</section>
+
+<section class="panel p-cream" id="experience">
+  <div class="inner gutter"><div class="wrap">
+    <span class="num rv" data-rv>05 — Experience</span>
+    <div class="sec-head rv" data-rv><h2>Five years, <em>three</em> markets</h2><p>In-house, freelance, and a global beauty house.</p></div>
+    <div class="xp rv-stagger" data-rv>
+      <div class="row"><span class="y">2025 — NOW</span><span class="t">Social Media Strategist, NxtWave (NIAT Pune)</span><span class="w">Pune, India</span></div>
+      <div class="row"><span class="y">2021 — 2025</span><span class="t">Freelance Brand Content Partner</span><span class="w">Singapore</span></div>
+      <div class="row"><span class="y">2024</span><span class="t">Marketing Intern, L'Oréal Luxe</span><span class="w">Singapore</span></div>
+      <div class="row"><span class="y">2023 — 2024</span><span class="t">Master's in Digital Marketing, Singapore University of Social Sciences</span><span class="w">Thesis on influencer tiers and engagement</span></div>
+    </div>
+  </div></div>
+  <div class="veil"></div>
+</section>
+
+<footer class="panel p-coral" id="contact">
+  <div class="blob" aria-hidden="true"></div>
+  <div class="inner gutter"><div class="wrap">
+    <span class="num rv" data-rv>06 — Contact</span>
+    <h2 class="rv" data-rv>Let's make something people <em>remember.</em></h2>
+    <div class="links rv" data-rv><span>aanchalsharma@outlook.in</span><a href="https://www.linkedin.com/in/aanchal-sh/">LinkedIn</a><a href="https://www.instagram.com/by_aanchall">Instagram</a></div>
+    <div class="copy">© 2026 Aanchal Sharma · Prototype</div>
+  </div></div>
+</footer>
+
+
+<dialog class="proj" id="proj-marathi" aria-labelledby="pm-title">
+  <div class="box">
+    <button type="button" class="close" data-close aria-label="Close">&times;</button>
+    <div class="head"><div><span class="num">01 — Influencer campaign · 2026</span><h2 id="pm-title">Marathi creator-led campaign</h2></div><div class="meta"><span>Client <b>NIAT, NxtWave</b></span><span>Role <b>Strategy, casting, briefing</b></span><span>Result <b>6M+ views in two months</b></span></div></div>
+    <p class="sum">Five Marathi creators, from comedy to lifestyle, were briefed to tell the NIAT story in their own voice to families across Maharashtra during admissions season. The reels below are the creators' published posts.</p>
+    <div class="reels"><figure class="reel"><div class="ph"><video muted loop playsinline preload="none" poster="media/r1-poster.jpg" data-src="media/r1-preview.mp4"></video></div><figcaption><b>Siddhant Naik</b>Creator reel · NIAT Maharashtra<br><a href="https://www.instagram.com/reels/DbDu9pTupZz/">View full reel on Instagram</a></figcaption></figure><figure class="reel"><div class="ph"><video muted loop playsinline preload="none" poster="media/r2-poster.jpg" data-src="media/r2-preview.mp4"></video></div><figcaption><b>Sahil Gaikwad</b>Creator reel · NIAT Maharashtra<br><a href="https://www.instagram.com/reels/DcVKnp6IuRS/">View full reel on Instagram</a></figcaption></figure><figure class="reel"><div class="ph"><video muted loop playsinline preload="none" poster="media/r3-poster.jpg" data-src="media/r3-preview.mp4"></video></div><figcaption><b>Aditya Dere</b>Creator reel · NIAT Maharashtra<br><a href="https://www.instagram.com/reels/DclhIWcRsJh/">View full reel on Instagram</a></figcaption></figure><figure class="reel"><div class="ph"><video muted loop playsinline preload="none" poster="media/r4-poster.jpg" data-src="media/r4-preview.mp4"></video></div><figcaption><b>Mh19_Comedian</b>Creator reel · NIAT Maharashtra<br><a href="https://www.instagram.com/reels/DcbFaRVPQ8n/">View full reel on Instagram</a></figcaption></figure><figure class="reel"><div class="ph"><video muted loop playsinline preload="none" poster="media/r5-poster.jpg" data-src="media/r5-preview.mp4"></video></div><figcaption><b>Gauravmalode5</b>Creator reel · NIAT Maharashtra<br><a href="https://www.instagram.com/reels/DbNTKMStSUa/">View full reel on Instagram</a></figcaption></figure></div>
+    <p class="note">Previews are short muted loops. Full reels will play here once the originals are hosted; for now the link opens Instagram.</p>
+  </div>
+</dialog>
+
+<dialog class="proj" id="proj-ugc" aria-labelledby="pu-title">
+  <div class="box">
+    <button type="button" class="close" data-close aria-label="Close">&times;</button>
+    <div class="head"><div><span class="num">02 — UGC community programme · 2025 to 2026</span><h2 id="pu-title">Student Creator Program</h2></div><div class="meta"><span>Client <b>NIAT Pune, NxtWave</b></span><span>Role <b>Programme lead; strategy and UGC</b></span><span>Scale <b>15+ creators, 200+ videos</b></span></div></div>
+    <p class="sum">Led Pune's student creator and UGC strategy: a standing community of student creators on campus who produce a steady stream of authentic, short-form content about life at NIAT, so the brand speaks in students' voices rather than its own.</p>
+    <div class="ugcgrid">
+      <div class="hero"><div class="word">Creators<br><i>Program</i></div><div class="sub">A student-run content engine for NIAT Pune, briefed and quality-checked weekly, published across Instagram and YouTube.</div></div>
+      <div>
+        <div class="ugcstats">
+          <div><div class="n"><span data-count="15">0</span><span class="s">+</span></div><div class="l">student creators recruited and onboarded</div></div>
+          <div><div class="n"><span data-count="200">0</span><span class="s">+</span></div><div class="l">videos published by the community</div></div>
+          <div><div class="n"><span data-count="500">0</span>K<span class="s">+</span></div><div class="l">views across platforms</div></div>
+        </div>
+      </div>
+      <div class="full">
+        <ol class="steps">
+          <li><span class="k">01</span><div><b>Recruit</b><span>Scout and onboard students who already make content, across courses and years.</span></div></li>
+          <li><span class="k">02</span><div><b>Brief</b><span>Weekly content themes, hooks, and formats, with room for each creator's own voice.</span></div></li>
+          <li><span class="k">03</span><div><b>Produce</b><span>Light-touch review for brand safety and quality, never a script.</span></div></li>
+          <li><span class="k">04</span><div><b>Amplify</b><span>Best performers reposted on NIAT channels and fed back into the next brief.</span></div></li>
+        </ol>
+      </div>
+    </div>
+    <p class="note">Programme steps are a working summary and can be rewritten in Aanchal's words. Example videos can be added here later if any are available.</p>
+  </div>
+</dialog>
+<dialog class="proj" id="proj-short" aria-labelledby="ps-title">
+  <div class="box">
+    <button type="button" class="close" data-close aria-label="Close">&times;</button>
+    <div class="head"><div><span class="num">04 — On camera · 2025</span><h2 id="ps-title">The 24-hour Short</h2></div><div class="meta"><span>Channel <b>NIAT Pune, YouTube</b></span><span>Role <b>Concept, on camera, edit</b></span><span>Result <b>2M views in a day</b></span></div></div>
+    <p class="sum">One YouTube Short, written and fronted by Aanchal, that reached two million views and brought in two thousand new subscribers within twenty-four hours of posting. It became the channel's fastest-growing piece and set the format for the Shorts that followed.</p>
+    <div class="ugcgrid">
+      <div class="hero lime"><div class="word">2M<br><i>in 24 hours</i></div><div class="sub">A single vertical Short, phone-shot, cut for the first second. The hook did the work.</div></div>
+      <div><div class="ugcstats"><div><div class="n"><span data-count="2">0</span>M<span class="s">+</span></div><div class="l">views in the first 24 hours</div></div><div><div class="n"><span data-count="2000" data-comma>0</span><span class="s">+</span></div><div class="l">new subscribers from one video</div></div><div><div class="n"><span data-count="24">0</span><span class="s">h</span></div><div class="l">from posting to both milestones</div></div></div></div>
+      <div class="full"><ol class="steps"><li><span class="k">01</span><div><b>Hook</b><span>A first line students could not scroll past, tested against three alternatives.</span></div></li><li><span class="k">02</span><div><b>Shoot</b><span>Phone-shot on campus in an afternoon, with natural light and no crew.</span></div></li><li><span class="k">03</span><div><b>Cut</b><span>Edited for the first second and the loop, with captions on by default.</span></div></li><li><span class="k">04</span><div><b>Ride it</b><span>Comments answered for the first six hours to keep the Short in distribution.</span></div></li></ol></div>
+    </div>
+    <p class="note">Numbers from the Wix portfolio. The video itself can be embedded here with a YouTube link whenever it turns up; the steps are a working summary for Aanchal to adjust.</p>
+  </div>
+</dialog>
+<dialog class="proj" id="proj-takami" aria-labelledby="pt-title">
+  <div class="box">
+    <button type="button" class="close" data-close aria-label="Close">&times;</button>
+    <div class="head"><div><span class="num">05 — Strategy · L'Oréal Luxe, Singapore · 2024</span><h2 id="pt-title">Takami launch, South-East Asia</h2></div><div class="meta"><span>Client <b>L'Oréal Luxe</b></span><span>Role <b>Marketing intern, reporting to the GM</b></span><span>Scope <b>360° media and retail plan</b></span></div></div>
+    <p class="sum">A 360-degree media and retail plan for the launch of Takami, L'Oréal Luxe's Japanese skincare brand, in South-East Asia: built to establish awareness fast and spark engagement across platforms, presented to the General Manager and carried through to e-commerce and a creator workshop.</p>
+    <div class="ugcgrid">
+      <div class="hero "><div class="word">Takami<br><i>× SEA</i></div><div class="sub">Launch strategy for a Japanese skincare brand, from media mix to the Shopee storefront.</div></div>
+      <div><div class="ugcstats"><div><div class="n"><span data-count="5">0</span></div><div class="l">e-commerce campaigns, including Shopee and Sephora Singapore</div></div><div><div class="n"><span data-count="150">0</span><span class="s">+</span></div><div class="l">creators at the launch workshop, Singapore and Malaysia</div></div><div><div class="n"><span data-count="2">0</span></div><div class="l">platforms on the editorial calendar: Instagram and TikTok</div></div></div></div>
+      <div class="full"><ol class="steps"><li><span class="k">01</span><div><b>Plan</b><span>360-degree media and retail plan covering paid, owned, earned, and in-store.</span></div></li><li><span class="k">02</span><div><b>Calendar</b><span>Editorial calendar for Instagram and TikTok, built around the launch beats.</span></div></li><li><span class="k">03</span><div><b>Commerce</b><span>Five promotional campaigns on Shopee and Sephora, plus catalogue upkeep.</span></div></li><li><span class="k">04</span><div><b>Creators</b><span>Brand launch workshop for 150+ content creators across two markets.</span></div></li></ol></div>
+    </div>
+    <p class="note">Written from the CV. If any launch visuals or decks can be shared, they can replace the typographic tile.</p>
+  </div>
+</dialog>
+<dialog class="proj" id="proj-sg" aria-labelledby="pg-title">
+  <div class="box">
+    <button type="button" class="close" data-close aria-label="Close">&times;</button>
+    <div class="head"><div><span class="num">06 — Brand content · Singapore · 2021 to 2025</span><h2 id="pg-title">Brand content partner</h2></div><div class="meta"><span>Clients <b>60+ brands</b></span><span>Role <b>Freelance brand content partner</b></span><span>Span <b>Four years</b></span></div></div>
+    <p class="sum">Four years as a freelance content partner to brands in Singapore: planning and running paid campaigns across ad formats, and creating visual and video content for launches, seasonal moments, and awareness. One Instagram retention campaign alone drove 150 purchases in two months.</p>
+    <div class="ugcgrid">
+      <div class="hero sky"><div class="word">60<i>+</i><br>brands</div><div class="sub">Launch, seasonal, and awareness content, shot and edited by Aanchal, plus paid campaigns built for retention.</div><div class="brands"><span>Paid social</span><span>Product launches</span><span>Seasonal campaigns</span><span>Reels and video</span><span>Retention</span></div></div>
+      <div><div class="ugcstats"><div><div class="n"><span data-count="60">0</span><span class="s">+</span></div><div class="l">brands partnered with across Singapore</div></div><div><div class="n"><span data-count="150">0</span></div><div class="l">purchases from one retention campaign in two months</div></div><div><div class="n"><span data-count="4">0</span></div><div class="l">years of launch and seasonal content</div></div></div></div>
+      <div class="full"><ol class="steps"><li><span class="k">01</span><div><b>Brief</b><span>Understand the product, the season, and who is meant to buy again.</span></div></li><li><span class="k">02</span><div><b>Create</b><span>Tailored stills and video for launches, seasonal campaigns, and awareness.</span></div></li><li><span class="k">03</span><div><b>Run paid</b><span>Campaigns across ad formats, tuned for retention rather than reach alone.</span></div></li><li><span class="k">04</span><div><b>Measure</b><span>Read results back into the next brief; the retention campaign is the proof point.</span></div></li></ol></div>
+    </div>
+    <p class="note">Written from the CV. A small grid of client logos or campaign stills would lift this view when they are available.</p>
+  </div>
+</dialog>
+<dialog class="proj" id="proj-events" aria-labelledby="pe-title">
+  <div class="box">
+    <button type="button" class="close" data-close aria-label="Close">&times;</button>
+    <div class="head"><div><span class="num">03 — Event production · 2025 to 2026</span><h2 id="pe-title">Brand films &amp; campus events</h2></div><div class="meta"><span>Client <b>NIAT Pune, NxtWave</b></span><span>Role <b>YouTube content lead; brief to post</b></span><span>Scale <b>15+ events</b></span></div></div>
+    <p class="sum">End-to-end production for 15+ campus events and the NIAT Pune YouTube channel, run like a production house: brief, treatment, budget, casting, on-ground shoot, and post-production storytelling. A team of three, including an associate video producer and cinematographer.</p>
+    <div class="reels films"><figure class="reel"><div class="ph"><img src="img/interview.jpg" alt=""><a class="play" href="https://www.youtube.com/watch?v=E7lAGr8AEkU" aria-label="Watch Jackie Shroff sent Thugesh a legal notice on YouTube"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></a></div><figcaption><b>Jackie Shroff sent Thugesh a legal notice</b>Podcast shoot with Thugesh · NIAT Pune YouTube<br><a href="https://www.youtube.com/watch?v=E7lAGr8AEkU">Watch on YouTube</a></figcaption></figure><figure class="reel"><div class="ph"><img src="img/stage.jpg" alt=""><a class="play" href="https://www.youtube.com/watch?v=b5keoR-jWU4" aria-label="Watch NIAT exposed: watch this before you join on YouTube"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></a></div><figcaption><b>NIAT exposed: watch this before you join</b>Brand film · NIAT Pune YouTube<br><a href="https://www.youtube.com/watch?v=b5keoR-jWU4">Watch on YouTube</a></figcaption></figure><figure class="reel"><div class="ph"><img src="img/camera.jpg" alt=""><a class="play" href="https://www.youtube.com/watch?v=CO737Z_ezB0" aria-label="Watch NIAT Pune freshers review campus life on YouTube"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="#0E0E1A"></path></svg></a></div><figcaption><b>NIAT Pune freshers review campus life</b>Campus stories · NIAT Pune YouTube<br><a href="https://www.youtube.com/watch?v=CO737Z_ezB0">Watch on YouTube</a></figcaption></figure></div>
+    <p class="note">On the live site these play in place with YouTube's player and real thumbnails. The preview here uses stand-in images because it cannot load YouTube.</p>
+  </div>
+</dialog>
+
+</div>
+
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var h1 = document.getElementById('hero-h1');
+  if(h1 && !reduced){
+    var html = '';
+    Array.prototype.forEach.call(h1.childNodes, function(n){
+      if(n.nodeType===3){ n.textContent.split(/\s+/).filter(Boolean).forEach(function(w){ html += '<span class="w"><span>'+w+'</span></span> '; }); }
+      else { html += '<span class="w"><span class="'+n.className+'">'+n.textContent+'</span></span> '; }
+    });
+    h1.innerHTML = html;
+    Array.prototype.forEach.call(h1.querySelectorAll('.w span'), function(s,i){ s.style.animationDelay = (0.2 + i*0.1)+'s'; });
+  }
+  var items = document.querySelectorAll('[data-rv]');
+  if('IntersectionObserver' in window && !reduced){
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); }, {threshold:0.12});
+    items.forEach(function(el){ io.observe(el); });
+  } else { items.forEach(function(el){ el.classList.add('in'); }); }
+  var counters = document.querySelectorAll('[data-count]');
+  function fmt(n, comma){ n = Math.round(n); return comma ? n.toLocaleString('en-IN') : String(n); }
+  if('IntersectionObserver' in window && !reduced){
+    var co = new IntersectionObserver(function(es){ es.forEach(function(e){ if(!e.isIntersecting) return; co.unobserve(e.target);
+      var el = e.target, end = parseFloat(el.getAttribute('data-count')), comma = el.hasAttribute('data-comma'), t0 = null;
+      function step(ts){ if(!t0) t0 = ts; var p = Math.min(1,(ts-t0)/1500); p = 1-Math.pow(1-p,3); el.textContent = fmt(end*p, comma); if(p<1) requestAnimationFrame(step); }
+      requestAnimationFrame(step);
+    }); }, {threshold:0.5});
+    counters.forEach(function(c){ co.observe(c); });
+  } else { counters.forEach(function(c){ c.textContent = fmt(parseFloat(c.getAttribute('data-count')), c.hasAttribute('data-comma')); }); }
+
+  /* the deck: sticky offsets for tall panels, depth effect as the next panel covers */
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+  var veils = panels.map(function(p){ return p.querySelector('.veil'); });
+  var bar = document.getElementById('progress'), hero = document.getElementById('hero-text');
+  var pxImgs = Array.prototype.slice.call(document.querySelectorAll('[data-px]'));
+  function layout(){
+    var vh = window.innerHeight;
+    panels.forEach(function(p){ var h = p.offsetHeight; p.style.top = (h > vh ? (vh - h) : 0) + 'px'; });
+  }
+  var ticking = false;
+  function onScroll(){
+    var y = window.scrollY, vh = window.innerHeight, H = document.documentElement.scrollHeight - vh;
+    if(bar) bar.style.width = (H>0 ? (y/H*100) : 0) + '%';
+    if(!reduced){
+      for(var i=0;i<panels.length-1;i++){
+        var nextTop = panels[i+1].getBoundingClientRect().top;
+        var p = Math.min(1, Math.max(0, (vh - nextTop)/vh));
+        var e = p*p;
+        panels[i].style.transform = p>0 ? 'translateY('+(-e*60)+'px) scale('+(1-e*0.07)+')' : '';
+        if(veils[i]) veils[i].style.opacity = String(e*0.55);
+      }
+      if(hero){ var k = Math.min(1, y/(vh*0.9)); hero.style.transform = 'translateY('+(y*0.18)+'px)'; hero.style.opacity = String(1 - k*0.85); }
+      pxImgs.forEach(function(img){ var r = img.parentElement.getBoundingClientRect(); var c = (r.top + r.height/2 - vh/2)/vh; img.style.transform = 'translateY('+(c*-28)+'px)'; });
+    }
+    ticking = false;
+  }
+  window.addEventListener('scroll', function(){ if(!ticking){ ticking = true; requestAnimationFrame(onScroll); } }, {passive:true});
+  window.addEventListener('resize', function(){ layout(); onScroll(); });
+  layout(); onScroll();
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+  window.addEventListener('load', layout);
+
+  /* project dialogs */
+  document.querySelectorAll('[data-open]').forEach(function(b){ b.addEventListener('click', function(){ var d = document.getElementById(b.getAttribute('data-open')); if(!d) return; if(d.showModal) d.showModal(); else d.setAttribute('open','');
+    d.querySelectorAll('video[data-src]').forEach(function(v){ if(!v.getAttribute('src')){ v.src = v.getAttribute('data-src'); } v.play().catch(function(){}); }); }); });
+  document.querySelectorAll('dialog.proj').forEach(function(d){
+    d.querySelectorAll('[data-close]').forEach(function(c){ c.addEventListener('click', function(){ d.close(); }); });
+    d.addEventListener('click', function(e){ if(e.target===d) d.close(); });
+    d.addEventListener('close', function(){ d.querySelectorAll('video').forEach(function(v){ v.pause(); }); });
+  });
+})();
+</script>
+
+
+<script src="three.min.js"></script>
+<script>
+(function(){
+  if(!window.THREE){ return; }
+  var IMG = ['img/interview.jpg','img/camera.jpg','img/stage.jpg','img/portrait.jpg'];
+  var loader = new THREE.TextureLoader();
+  var textures = IMG.map(function(p){ var t = loader.load(p); t.minFilter = THREE.LinearFilter; return t; });
+  var wallTex = ['media/r1-poster.jpg','media/r2-poster.jpg','media/r3-poster.jpg','media/r4-poster.jpg','media/r5-poster.jpg','img/interview.jpg','img/stage.jpg'].map(function(p){ var t = loader.load(p); t.minFilter = THREE.LinearFilter; return t; });
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ACCENT = 0xFF5E4D, SUN = 0xD9F55B, INK = 0x0E0E1A;
+
+  function makeRenderer(canvas){
+    var r = new THREE.WebGLRenderer({canvas:canvas, antialias:true, alpha:false});
+    r.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+    r.setClearColor(INK, 1);
+    return r;
+  }
+  function fit(r, cam, el){
+    var w = el.clientWidth, h = el.clientHeight; if(!w||!h) return;
+    var c = r.domElement; if(c.width!==Math.floor(w*r.getPixelRatio())||c.height!==Math.floor(h*r.getPixelRatio())){ r.setSize(w,h,false); cam.aspect=w/h; cam.updateProjectionMatrix(); }
+  }
+  function drag(el, onMove, onClick){
+    var down=false, moved=false, lx=0, ly=0, sx=0, sy=0;
+    el.addEventListener('pointerdown', function(e){ if(e.target.closest('a,button')) return; down=true; moved=false; lx=sx=e.clientX; ly=sy=e.clientY; });
+    el.addEventListener('pointermove', function(e){
+      if(!down){ if(onMove) onMove(0,0,e,false); return; }
+      var dx=e.clientX-lx, dy=e.clientY-ly; lx=e.clientX; ly=e.clientY;
+      if(Math.abs(e.clientX-sx)+Math.abs(e.clientY-sy)>6) moved=true;
+      if(onMove) onMove(dx,dy,e,true);
+    });
+    function up(e){ if(!down) return; down=false; if(!moved && onClick) onClick(e); }
+    el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up); el.addEventListener('pointerleave', function(){ down=false; });
+  }
+  function ndc(el, e){ var b = el.getBoundingClientRect(); return new THREE.Vector2(((e.clientX-b.left)/b.width)*2-1, -((e.clientY-b.top)/b.height)*2+1); }
+  function sectionProgress(el){ var r = el.getBoundingClientRect(), vh = window.innerHeight; return (vh - r.top)/(vh + r.height); }
+  var scenes = {};
+
+  /* Studio hero */
+  (function(){
+    var el = document.getElementById('top'), canvas = document.getElementById('c-studio');
+    var r = makeRenderer(canvas), scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(INK, 10, 24);
+    var cam = new THREE.PerspectiveCamera(40, 1, .1, 60);
+    scene.add(new THREE.HemisphereLight(0xFFF4E6, 0x1A1440, 0.95));
+    var spot = new THREE.PointLight(0xFFE2C4, 1.1, 30); spot.position.set(2,5,3); scene.add(spot);
+    var fill = new THREE.PointLight(0x2B4BFF, 0.9, 20); fill.position.set(-4,3,2); scene.add(fill);
+    var mat = function(c){ return new THREE.MeshStandardMaterial({color:c, roughness:0.85, metalness:0.05}); };
+    var floor = new THREE.Mesh(new THREE.PlaneGeometry(16,16), mat(0x1C1640)); floor.rotation.x=-Math.PI/2; scene.add(floor);
+    var wall = new THREE.Mesh(new THREE.PlaneGeometry(16,7), mat(0x241C4F)); wall.position.set(0,3.5,-5); scene.add(wall);
+    var grid = new THREE.GridHelper(16, 16, 0x2E2566, 0x2E2566); grid.position.y = 0.01; scene.add(grid);
+    var camG = new THREE.Group(); camG.position.set(-2.2,0,0.4); scene.add(camG);
+    for(var i=0;i<3;i++){ var leg = new THREE.Mesh(new THREE.CylinderGeometry(0.03,0.03,2.2), mat(0x9A95B5)); var a=i/3*Math.PI*2; leg.position.set(Math.sin(a)*0.45,1.1,Math.cos(a)*0.45); leg.rotation.z = Math.sin(a)*0.35; leg.rotation.x = -Math.cos(a)*0.35; camG.add(leg); }
+    var body = new THREE.Mesh(new THREE.BoxGeometry(0.7,0.45,0.5), mat(0x2A2450)); body.position.y=2.35; camG.add(body);
+    var lens = new THREE.Mesh(new THREE.CylinderGeometry(0.16,0.2,0.5,24), mat(0x100C24)); lens.rotation.x=Math.PI/2; lens.position.set(0,2.35,0.5); camG.add(lens);
+    var ring = new THREE.Mesh(new THREE.TorusGeometry(0.75,0.08,16,48), new THREE.MeshStandardMaterial({color:0xFFF1DC, emissive:0xFFE6C7, emissiveIntensity:0.9})); ring.position.set(1.8,2.6,-1.2); scene.add(ring);
+    var pole = new THREE.Mesh(new THREE.CylinderGeometry(0.03,0.03,2.6), mat(0x9A95B5)); pole.position.set(1.8,1.3,-1.2); scene.add(pole);
+    var monG = new THREE.Group(); monG.position.set(3.4,0,-2.6); monG.rotation.y=-0.5; scene.add(monG);
+    var desk = new THREE.Mesh(new THREE.BoxGeometry(2.4,0.08,1.1), mat(0x3B3270)); desk.position.y=1.1; monG.add(desk);
+    var screen = new THREE.Mesh(new THREE.PlaneGeometry(1.8,1.05), new THREE.MeshBasicMaterial({map:textures[1]})); screen.position.set(0,1.85,-0.2); monG.add(screen);
+    var bezel = new THREE.Mesh(new THREE.BoxGeometry(1.9,1.15,0.06), mat(0x100C24)); bezel.position.set(0,1.85,-0.24); monG.add(bezel);
+    var micG = new THREE.Group(); micG.position.set(0.3,0,1.6); scene.add(micG);
+    var stand = new THREE.Mesh(new THREE.CylinderGeometry(0.025,0.025,1.5), mat(0x9A95B5)); stand.position.y=0.75; micG.add(stand);
+    var micHead = new THREE.Mesh(new THREE.SphereGeometry(0.16,16,16), mat(0xD2CCE6)); micHead.position.y=1.6; micG.add(micHead);
+    var board = new THREE.Mesh(new THREE.PlaneGeometry(2.6,1.5), mat(0xFBF8F1)); board.position.set(-3.2,2.4,-4.95); scene.add(board);
+    var lineCols = [0x2B4BFF, ACCENT, 0xBFE3FF, 0x140F2D];
+    for(var j=0;j<4;j++){ var line = new THREE.Mesh(new THREE.PlaneGeometry(1.6-j*0.3,0.1), new THREE.MeshBasicMaterial({color:lineCols[j]})); line.position.set(-3.2-(j*0.15),2.85-j*0.3,-4.94); scene.add(line); }
+    var poster = new THREE.Mesh(new THREE.PlaneGeometry(1.4,1.75), new THREE.MeshBasicMaterial({map:textures[3]})); poster.position.set(0.4,2.6,-4.95); scene.add(poster);
+    var posterFrame = new THREE.Mesh(new THREE.PlaneGeometry(1.56,1.91), new THREE.MeshBasicMaterial({color:SUN})); posterFrame.position.set(0.4,2.6,-4.96); scene.add(posterFrame);
+    var hs = [
+      {p:[-2.2,2.9,0.4], t:'Brand films', d:'15+ campus events and NIAT brand films, produced end to end.'},
+      {p:[1.8,3.5,-1.2], t:'Creator campaigns', d:'Marathi creator-led campaign: 6M+ views in two months.'},
+      {p:[3.4,2.7,-2.6], t:'Student Creator Program', d:'15+ creators, 200+ UGC videos, 500K+ views.'},
+      {p:[0.3,2.1,1.6], t:'On camera', d:'Hosting, interviews, and a Short that hit 2M views in a day.'},
+      {p:[-3.2,3.4,-4.6], t:'Strategy', d:'L’Oréal Luxe Takami launch plan; 60+ brands in Singapore.'}
+    ];
+    var spots = hs.map(function(h){ var m = new THREE.Mesh(new THREE.SphereGeometry(0.13,16,16), new THREE.MeshBasicMaterial({color:SUN})); m.position.fromArray(h.p); m.userData=h; scene.add(m); var halo = new THREE.Mesh(new THREE.RingGeometry(0.2,0.24,32), new THREE.MeshBasicMaterial({color:SUN, transparent:true, opacity:0.6, side:THREE.DoubleSide})); m.add(halo); m.userData.halo = halo; return m; });
+    var card = document.getElementById('studio-card'), ct = document.getElementById('studio-t'), cd = document.getElementById('studio-d'), status = document.getElementById('studio-status');
+    var yaw = 0.35, pitch = 0.22, ray = new THREE.Raycaster(), hover=null, t=0;
+    function pick(e){ ray.setFromCamera(ndc(el,e), cam); var h = ray.intersectObjects(spots); return h.length?h[0].object:null; }
+    drag(el, function(dx,dy,e,isDrag){ if(isDrag){ yaw -= dx*0.005; pitch = Math.max(0.05, Math.min(0.9, pitch + dy*0.004)); } else { hover = pick(e); el.style.cursor = hover?'pointer':'grab'; } },
+      function(e){ var h = pick(e); if(h){ ct.textContent=h.userData.t; cd.textContent=h.userData.d; card.hidden=false; status.textContent = h.userData.t; } else { card.hidden=true; status.textContent='5 areas · scroll ↓'; } });
+    scenes.studio = { el:el, visible:true, render:function(dt){
+      fit(r, cam, el); t+=dt;
+      var sy = reduced ? 0 : Math.min(1, window.scrollY/Math.max(1, el.clientHeight));
+      var ry = (reduced?yaw:yaw+Math.sin(t*0.2)*0.03) + sy*0.6;
+      var wide = el.clientWidth/el.clientHeight;
+      var dist = wide<1 ? 13 : 10;
+      cam.position.set(Math.sin(ry)*dist + (wide<1?0:-3.4), 2.2+pitch*5 + sy*2.5, Math.cos(ry)*dist); cam.lookAt(wide<1?0:-2.6, wide<1?3.6:1.6, -1);
+      spots.forEach(function(s,i){ var k = 1+Math.sin(t*3+i)*0.18; s.scale.setScalar(s===hover?1.6:k); s.userData.halo.lookAt(cam.position); s.userData.halo.material.opacity = 0.35+0.35*Math.sin(t*3+i); });
+      r.render(scene, cam);
+    }};
+  })();
+
+  /* Creator wall */
+  (function(){
+    var el = document.getElementById('creators'), canvas = document.getElementById('c-ugc');
+    var r = makeRenderer(canvas), scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(INK, 9, 18);
+    var cam = new THREE.PerspectiveCamera(42, 1, .1, 60); cam.position.set(0,0,11);
+    scene.add(new THREE.AmbientLight(0xffffff, 1));
+    var creators = [
+      ['Siddhant Naik','Marathi creator campaign · comedy'],['Sahil Gaikwad','Marathi creator campaign · lifestyle'],['Aditya Dere','Marathi creator campaign · campus life'],
+      ['Mh19_Comedian','Marathi creator campaign · regional comedy'],['Gauravmalode5','Marathi creator campaign · vlog'],['Student creator','Student Creator Program · day in the life'],
+      ['Student creator','Student Creator Program · hostel tour'],['Student creator','Student Creator Program · placement story'],['Brand UGC','Singapore retention campaign · 150 purchases'],
+      ['Brand UGC','Seasonal launch content, Singapore'],['Creator workshop','L’Oréal Luxe · 150+ creators briefed'],['Student creator','Student Creator Program · exam week']
+    ];
+    var barCols = [ACCENT, SUN, 0xBFE3FF, 0xDCCFFF, 0x2B4BFF];
+    var COLS = 9, ROWS = 6, GAPX = 1.55, GAPY = 2.45, wall = new THREE.Group(); scene.add(wall);
+    wall.position.x = 1.6;
+    var pg = new THREE.PlaneGeometry(1.25, 2.2), bg = new THREE.PlaneGeometry(1.37, 2.32);
+    var tiles = [], n=0;
+    for(var y=0;y<ROWS;y++) for(var x=0;x<COLS;x++){
+      var g = new THREE.Group();
+      var b = new THREE.Mesh(bg, new THREE.MeshBasicMaterial({color:0x1F1848})); b.position.z=-0.01; g.add(b);
+      var m = new THREE.Mesh(pg, new THREE.MeshBasicMaterial({map:wallTex[(x*3+y)%wallTex.length], transparent:true, opacity:0.55+((x+y)%3)*0.15})); g.add(m);
+      var bar = new THREE.Mesh(new THREE.PlaneGeometry(0.9,0.07), new THREE.MeshBasicMaterial({color:barCols[(x+y)%barCols.length]})); bar.position.set(0,-0.95,0.01); bar.scale.x = 0.3+((x*5+y*3)%7)/10; g.add(bar);
+      g.position.set((x-(COLS-1)/2)*GAPX, (y-(ROWS-1)/2)*GAPY + (x%2)*1.1, 0);
+      g.userData = { base: g.position.clone(), c: creators[n%creators.length], mesh:m }; n++;
+      wall.add(g); tiles.push(g);
+    }
+    var shade = new THREE.Mesh(new THREE.PlaneGeometry(14, 20), new THREE.MeshBasicMaterial({color:INK, transparent:true, opacity:0.55})); shade.position.set(-7.5,0,1.5); scene.add(shade);
+    var card = document.getElementById('ugc-card'), ct = document.getElementById('ugc-t'), cd = document.getElementById('ugc-d');
+    var tilt = new THREE.Vector2(0,0), targetTilt = new THREE.Vector2(0,0), picked=null, ray = new THREE.Raycaster(), t=0, H = ROWS*GAPY;
+    drag(el, function(dx,dy,e){ var p = ndc(el,e); targetTilt.set(p.x, p.y); }, function(e){
+      ray.setFromCamera(ndc(el,e), cam);
+      var hits = ray.intersectObjects(tiles, true);
+      if(hits.length){ var g = hits[0].object.parent; if(picked===g){ picked=null; card.hidden=true; } else { picked=g; ct.textContent=g.userData.c[0]; cd.textContent=g.userData.c[1]; card.hidden=false; } }
+      else { picked=null; card.hidden=true; }
+    });
+    el.addEventListener('pointerleave', function(){ targetTilt.set(0,0); });
+    var front = new THREE.Vector3(-1.6,0,5.2);
+    scenes.ugc = { el:el, visible:false, render:function(dt){
+      fit(r, cam, el); t+=dt;
+      tilt.lerp(targetTilt, 0.06);
+      var sp = reduced ? 0.5 : sectionProgress(el);
+      wall.rotation.y = tilt.x*0.3; wall.rotation.x = -tilt.y*0.2 + (sp-0.5)*0.5;
+      wall.position.y = (sp-0.5)*-3;
+      var speed = reduced?0:0.35;
+      tiles.forEach(function(g,i){
+        var b = g.userData.base;
+        var yy = b.y + ((i%COLS)%2? -1:1)*speed*t;
+        yy = ((yy + H/2) % H + H) % H - H/2;
+        if(g===picked){ g.position.lerp(front, 0.12); g.scale.lerp(new THREE.Vector3(1.4,1.4,1), 0.12); g.userData.mesh.material.opacity += (1-g.userData.mesh.material.opacity)*0.15; }
+        else { g.position.x += (b.x-g.position.x)*0.12; g.position.z += (0-g.position.z)*0.12; g.position.y = yy; g.scale.lerp(new THREE.Vector3(1,1,1), 0.12); }
+      });
+      r.render(scene, cam);
+    }};
+  })();
+
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(es){ es.forEach(function(en){ var k = en.target.getAttribute('data-scene'); if(scenes[k]) scenes[k].visible = en.isIntersecting; }); }, {rootMargin:'100px'});
+    document.querySelectorAll('[data-scene]').forEach(function(s){ io.observe(s); });
+  } else { Object.keys(scenes).forEach(function(k){ scenes[k].visible = true; }); }
+  var last = performance.now();
+  function loop(now){ var dt = Math.min(0.05,(now-last)/1000); last = now; if(!document.hidden){ Object.keys(scenes).forEach(function(k){ if(scenes[k].visible) scenes[k].render(dt); }); } requestAnimationFrame(loop); }
+  requestAnimationFrame(loop);
+})();
+</script>
+
+</body>
+</html>
