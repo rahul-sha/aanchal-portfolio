@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Aanchal Sharma, brand and content strategist. Creator campaigns, UGC programmes, brand films, and launch strategy.">
 <title>Aanchal Sharma, brand and content strategist</title>
+<meta name="color-scheme" content="light">
 <meta name="theme-color" content="#F6F3EC">
 <meta property="og:title" content="Aanchal Sharma, brand and content strategist">
 <meta property="og:description" content="Creator campaigns, UGC programmes, brand films, and launch strategy.">
@@ -23,9 +24,8 @@
   --body:'Albert Sans',system-ui,-apple-system,Segoe UI,sans-serif;
   --ease:cubic-bezier(.22,.8,.2,1);
   --radius:28px;
+  color-scheme:light;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0B0B14;--fg:#F3F0EA;--muted:#A6A2B4;--line:#2A2838;--cream:#15141F;--lilac:#2A2340;--sky:#1C2A3A;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0B0B14;--fg:#F3F0EA;--muted:#A6A2B4;--line:#2A2838;--cream:#15141F;--lilac:#2A2340;--sky:#1C2A3A;color-scheme:dark}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;overflow-x:clip}
 body{background:var(--ink);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.5;padding:0}
@@ -112,7 +112,7 @@ em{font-style:italic;font-weight:300}
 .thumb .ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--ink)}
 .thumb .ph .big{font-family:var(--display);font-weight:300;font-size:80px;line-height:1;letter-spacing:-.05em}
 .thumb .ph .lab{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;opacity:.92}
-.thumb button{position:absolute;left:16px;bottom:16px;width:52px;height:52px;border-radius:50%;border:none;background:var(--cream);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .3s var(--ease)}
+.thumb button{position:absolute;left:16px;bottom:16px;width:52px;height:52px;border-radius:50%;border:none;background:#F6F3EC;box-shadow:0 6px 18px rgba(14,14,26,.25);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .3s var(--ease)}
 .thumb button:hover{transform:scale(1.08)}
 .tag{position:absolute;right:14px;top:14px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;background:rgba(246,243,236,.92);color:var(--ink);border-radius:999px;padding:7px 11px}
 .work h3{margin:18px 0 0;font-weight:400;font-size:26px;line-height:1.1;display:flex;justify-content:space-between;gap:12px}
