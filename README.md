@@ -4,7 +4,8 @@ A single-page portfolio for Aanchal Sharma, brand and content strategist. Plain 
 
 ## Files
 
-- `index.html`: the page markup and styles
+- `index.html`: the page markup and styles; the design tokens sit in the `:root` block at the top
+- `DESIGN.md`: the design system, with every token and the component patterns
 - `app.js`: page behaviour (reveals, count-ups, panel deck, project dialogs)
 - `scene.js`: the two Three.js stages, built after the page has painted; the creator wall is built only when scrolled near
 - `three.min.js`: Three.js r128, bundled locally
@@ -13,6 +14,10 @@ A single-page portfolio for Aanchal Sharma, brand and content strategist. Plain 
 - `vercel.json`: cache headers for the static assets
 - `Aanchal-Sharma-CV.pdf`: the CV served by the Download CV button
 - `.claude/skills/`: agent skills used when working on this repository with Claude Code
+
+## Design system
+
+Colours, type, spacing, radii, and motion are CSS custom properties declared once in `index.html` and documented in `DESIGN.md`. Change a value there and it reaches the whole site. The `portfolio-design-system` skill tells Claude Code to follow it.
 
 ## Run it locally
 
