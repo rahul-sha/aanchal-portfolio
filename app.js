@@ -58,6 +58,34 @@
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
   window.addEventListener('load', layout);
 
+  /* In-page links. The panels are sticky, so the browser's own anchor jump lands on a panel's pinned position
+     instead of its place in the page. Scroll to the real document offset instead. */
+  function docTop(el){ var t = 0; while(el){ t += el.offsetTop; el = el.offsetParent; } return t; }
+  /* A stuck panel reports its pinned position, so work out where each panel sits in the page from the
+     heights of the panels before it. Recomputed in layout() whenever sizes change. */
+  var staticTop = {};
+  function measure(){
+    var y = 0, parent = null;
+    panels.forEach(function(p){
+      if(p.parentElement !== parent){ parent = p.parentElement; y = Math.max(y, docTop(parent)); }
+      staticTop[p.id] = y; y += p.offsetHeight;
+    });
+  }
+  function goTo(id, push){
+    var el = document.getElementById(id); if(!el) return false;
+    measure();
+    var target = (el.id in staticTop) ? staticTop[el.id] : docTop(el);
+    window.scrollTo({top: target, left: 0, behavior: reduced ? 'auto' : 'smooth'});
+    if(push && history.pushState){ history.pushState(null, '', '#'+id); }
+    if(id === 'main'){ el.setAttribute('tabindex','-1'); el.focus({preventScroll:true}); }
+    return true;
+  }
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener('click', function(e){ var id = a.getAttribute('href').slice(1); if(id && goTo(id, true)) e.preventDefault(); });
+  });
+  if(location.hash.length > 1){ setTimeout(function(){ goTo(location.hash.slice(1), false); }, 60); }
+  window.addEventListener('hashchange', function(){ if(location.hash.length > 1) goTo(location.hash.slice(1), false); });
+
   /* project dialogs */
   document.querySelectorAll('[data-open]').forEach(function(b){ b.addEventListener('click', function(){ var d = document.getElementById(b.getAttribute('data-open')); if(!d) return; if(d.showModal) d.showModal(); else d.setAttribute('open','');
     var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
