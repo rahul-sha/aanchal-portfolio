@@ -264,7 +264,9 @@ function buildStudioSet(THREE, scene, r, opts){
 function startScenes(){
   if(!window.THREE){ return; }
   var loader = new THREE.TextureLoader();
-  var wallTex = ['media/r1-poster.webp','media/r2-poster.webp','media/r3-poster.webp','media/r4-poster.webp','media/r5-poster.webp','img/interview.webp','img/stage.webp'].map(function(p){ var t = loader.load(p); t.minFilter = THREE.LinearFilter; return t; });
+  /* One atlas of 24 frames (6 reels x 4 moments) feeds the creator wall, so 54 tiles share a single texture. */
+  var wallAtlas = loader.load('media/wall-atlas.webp'); wallAtlas.minFilter = THREE.LinearFilter;
+  var ATLAS_COLS = 6, ATLAS_ROWS = 4;
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var ACCENT = 0xFF5E4D, SUN = 0xD9F55B, INK = 0x0E0E1A;
 
@@ -328,24 +330,29 @@ function startScenes(){
     scene.fog = new THREE.Fog(INK, 9, 18);
     var cam = new THREE.PerspectiveCamera(42, 1, .1, 60); cam.position.set(0,0,11);
     scene.add(new THREE.AmbientLight(0xffffff, 1));
+    // one caption per reel, matched to the frame on the tile
     var creators = [
-      ['Siddhant Naik','Regional creator campaign · comedy'],['Sahil Gaikwad','Regional creator campaign · lifestyle'],['Aditya Dere','Regional creator campaign · campus life'],
-      ['Mh19_Comedian','Regional creator campaign · regional comedy'],['Gauravmalode5','Regional creator campaign · vlog'],['Student creator','Student Creator Program · day in the life'],
-      ['Student creator','Student Creator Program · hostel tour'],['Student creator','Student Creator Program · placement story'],['Brand UGC','Singapore retention campaign · 150 purchases'],
-      ['Brand UGC','Seasonal launch content, Singapore'],['Creator workshop','L’Oréal Luxe · 150+ creators briefed'],['Student creator','Student Creator Program · exam week']
+      ['Siddhant Naik','Regional creator-led campaign · comedy'],['Sahil Gaikwad','Regional creator-led campaign · lifestyle'],['Aditya Dere','Regional creator-led campaign · campus life'],
+      ['Mh19_Comedian','Regional creator-led campaign · regional comedy'],['Gauravmalode5','Regional creator-led campaign · vlog'],['College ka senior','Regional creator-led campaign · campus comedy']
     ];
     var barCols = [ACCENT, SUN, 0xBFE3FF, 0xDCCFFF, 0x2B4BFF];
     var COLS = 9, ROWS = 6, GAPX = 1.55, GAPY = 2.45, wall = new THREE.Group(); scene.add(wall);
     wall.position.x = 1.6;
-    var pg = new THREE.PlaneGeometry(1.25, 2.2), bg = new THREE.PlaneGeometry(1.37, 2.32);
+    // rounded phone tiles: a shape geometry with its UVs pointed at one atlas cell
+    function roundedRect(w, h, rad){ var s = new THREE.Shape(), x = -w/2, y = -h/2; s.moveTo(x+rad, y); s.lineTo(x+w-rad, y); s.quadraticCurveTo(x+w, y, x+w, y+rad); s.lineTo(x+w, y+h-rad); s.quadraticCurveTo(x+w, y+h, x+w-rad, y+h); s.lineTo(x+rad, y+h); s.quadraticCurveTo(x, y+h, x, y+h-rad); s.lineTo(x, y+rad); s.quadraticCurveTo(x, y, x+rad, y); return s; }
+    function tileGeom(w, h, rad, cell){ var g = new THREE.ShapeGeometry(roundedRect(w, h, rad), 6); if(cell !== undefined){ var cx = cell % ATLAS_COLS, cy = Math.floor(cell / ATLAS_COLS), uv = g.attributes.uv, pos = g.attributes.position; for(var i=0;i<uv.count;i++){ uv.setXY(i, (cx + (pos.getX(i)/w + 0.5)) / ATLAS_COLS, 1 - (cy + 1 - (pos.getY(i)/h + 0.5)) / ATLAS_ROWS); } uv.needsUpdate = true; } return g; }
+    var cellGeoms = []; for(var c=0;c<ATLAS_COLS*ATLAS_ROWS;c++){ cellGeoms.push(tileGeom(1.25, 2.2, 0.2, c)); }
+    var bg = tileGeom(1.37, 2.32, 0.24);
+    var tints = [0xFFFFFF, 0xE9E2FF, 0xDDEBFF, 0xFFF1EC, 0xF2F7DE];
     var tiles = [], n=0;
     for(var y=0;y<ROWS;y++) for(var x=0;x<COLS;x++){
       var g = new THREE.Group();
       var b = new THREE.Mesh(bg, new THREE.MeshBasicMaterial({color:0x1F1848})); b.position.z=-0.01; g.add(b);
-      var m = new THREE.Mesh(pg, new THREE.MeshBasicMaterial({map:wallTex[(x*3+y)%wallTex.length], transparent:true, opacity:0.55+((x+y)%3)*0.15})); g.add(m);
+      var cell = (x + y*4 + Math.floor(y/2)) % (ATLAS_COLS*ATLAS_ROWS); // 24 frames over 54 tiles, no two neighbours alike
+      var m = new THREE.Mesh(cellGeoms[cell], new THREE.MeshBasicMaterial({map:wallAtlas, color:tints[(x*2+y)%tints.length], transparent:true, opacity:0.55+((x+y)%3)*0.15})); g.add(m);
       var bar = new THREE.Mesh(new THREE.PlaneGeometry(0.9,0.07), new THREE.MeshBasicMaterial({color:barCols[(x+y)%barCols.length]})); bar.position.set(0,-0.95,0.01); bar.scale.x = 0.3+((x*5+y*3)%7)/10; g.add(bar);
       g.position.set((x-(COLS-1)/2)*GAPX, (y-(ROWS-1)/2)*GAPY + (x%2)*1.1, 0);
-      g.userData = { base: g.position.clone(), c: creators[n%creators.length], mesh:m }; n++;
+      g.userData = { base: g.position.clone(), c: creators[cell % ATLAS_COLS], mesh:m }; n++;
       wall.add(g); tiles.push(g);
     }
     var shade = new THREE.Mesh(new THREE.PlaneGeometry(14, 20), new THREE.MeshBasicMaterial({color:INK, transparent:true, opacity:0.55})); shade.position.set(-7.5,0,1.5); scene.add(shade);
