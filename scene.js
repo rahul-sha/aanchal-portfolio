@@ -13,6 +13,12 @@ function buildStudioSet(THREE, scene, r, opts){
   function group(x,y,z,ry,parent){ var g = new THREE.Group(); g.position.set(x,y,z); if(ry) g.rotation.y = ry; (parent||scene).add(g); return g; }
   function box(w,h,d){ return new THREE.BoxGeometry(w,h,d); }
   function cyl(rt,rb,h,s){ return new THREE.CylinderGeometry(rt,rb,h,s||16); }
+  // a rod between two points (in the parent's coordinates), so joints always meet
+  function rod(a, b, rad, mat, parent, seg){ var va = new THREE.Vector3().fromArray(a), vb = new THREE.Vector3().fromArray(b), d = new THREE.Vector3().subVectors(vb, va); var m = mesh(cyl(rad,rad,d.length(),seg||8), mat, (va.x+vb.x)/2,(va.y+vb.y)/2,(va.z+vb.z)/2, parent, false); m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), d.normalize()); return m; }
+  // n legs from a collar at height topY (radius topR) out to feet on the floor (radius footR)
+  function legs(parent, n, topY, topR, footR, rad, mat, start){ for(var i=0;i<n;i++){ var a = (start||0)+i/n*Math.PI*2; rod([Math.sin(a)*topR,topY,Math.cos(a)*topR],[Math.sin(a)*footR,rad,Math.cos(a)*footR],rad,mat,parent,6); } }
+  // a light stand: centre column of height h that starts just under the leg collar
+  function lightStand(parent, h){ mesh(cyl(0.03,0.03,h-0.35,8), METAL, 0,(h+0.35)/2,0, parent); mesh(cyl(0.05,0.05,0.08,10), DARKMETAL, 0,0.55,0, parent, false); legs(parent,3,0.55,0.04,0.48,0.02,METAL); }
   var anim = []; // functions of (t, dt)
 
   /* ---- lighting ---- */
@@ -28,14 +34,15 @@ function buildStudioSet(THREE, scene, r, opts){
   var wall = mesh(new THREE.PlaneGeometry(34,9), M(0x1E1745,{roughness:0.95}), 0,4.5,-5); wall.castShadow = false;
   var skirting = mesh(box(34,0.12,0.04), M(0x2A2450), 0,0.06,-4.98);
   // acoustic foam: a field of small pyramids behind the creator spot
-  (function(){ var pg = new THREE.ConeGeometry(0.11,0.12,4), fm = M(0x2B2260,{roughness:1}); var foam = group(0.9,2.7,-4.97); for(var i=0;i<10;i++) for(var j=0;j<7;j++){ var p = new THREE.Mesh(pg, fm); p.position.set((i-4.5)*0.24,(j-3)*0.24,0); p.rotation.x = Math.PI/2; p.rotation.z = Math.PI/4; foam.add(p); } var back = mesh(box(2.5,1.8,0.04), fm, 0,0,-0.06, foam, false); })();
+  (function(){ var pg = new THREE.ConeGeometry(0.11,0.12,4), fm = M(0x2B2260,{roughness:1}); var foam = group(0.9,2.7,-4.96); for(var i=0;i<10;i++) for(var j=0;j<7;j++){ var p = new THREE.Mesh(pg, fm); p.position.set((i-4.5)*0.24,(j-3)*0.24,0.08); p.rotation.x = Math.PI/2; p.rotation.z = Math.PI/4; foam.add(p); } var back = mesh(box(2.5,1.8,0.04), fm, 0,0,0, foam, false); })();
   // tape marks on the floor (actor marks)
-  [[-2.2,0.4,0],[1.2,-2.2,0.4],[-0.2,1.4,0.2]].forEach(function(p){ var x = group(p[0],0.012,p[1]); x.rotation.x=-Math.PI/2; for(var i=0;i<2;i++){ var s = new THREE.Mesh(new THREE.PlaneGeometry(0.5,0.06), B(LIME)); s.rotation.z = Math.PI/4 + i*Math.PI/2 + p[2]; x.add(s); } });
+  [[-1.2,-0.4,0],[1.2,-1.85,0.4],[-0.6,1.0,0.2]].forEach(function(p){ var x = group(p[0],0.012,p[1]); x.rotation.x=-Math.PI/2; for(var i=0;i<2;i++){ var s = new THREE.Mesh(new THREE.PlaneGeometry(0.5,0.06), B(LIME)); s.rotation.z = Math.PI/4 + i*Math.PI/2 + p[2]; x.add(s); } });
   // cables snaking across the floor
   function cable(points, col){ var c = new THREE.CatmullRomCurve3(points.map(function(p){ return new THREE.Vector3(p[0],0.025,p[1]); })); var t = new THREE.Mesh(new THREE.TubeGeometry(c, 40, 0.022, 6, false), M(col||0x0B0918,{roughness:0.6})); t.castShadow=false; t.receiveShadow=true; scene.add(t); return t; }
   cable([[-5.2,-2.2],[-4.4,-1.2],[-3.6,-1.5],[-2.6,-0.6],[-1.4,-0.9],[-0.6,-0.2],[0.6,0.2],[1.6,-0.4]]);
-  cable([[3.6,-1.6],[2.8,-0.8],[2.2,0.3],[1.2,0.8],[0.3,1.3]], 0x3B3270);
-  cable([[1.8,-1.2],[2.6,-2.2],[3.4,-2.1]]);
+  cable([[5.0,-0.4],[4.2,-0.1],[3.2,0.2],[2.4,0.0],[1.95,-0.45]], 0x3B3270); // LED panel
+  cable([[1.8,-1.15],[2.15,-0.85],[2.0,-0.45]]); // ring light
+  cable([[2.7,-2.9],[2.6,-2.2],[2.3,-1.4],[2.05,-0.5]]); // desk
   var strip = mesh(box(0.5,0.06,0.14), BLACK, 1.7,0.03,-0.45); for(var si=0;si<4;si++){ var sk = mesh(box(0.06,0.01,0.06), M(0xD2CCE6), 1.52+si*0.12,0.065,-0.45, null, false); } var stripLed = mesh(new THREE.SphereGeometry(0.015,6,6), B(CORAL), 1.9,0.07,-0.4, null, false);
 
   /* ---- overhead truss with two fresnels and their beams ---- */
@@ -44,10 +51,10 @@ function buildStudioSet(THREE, scene, r, opts){
   mesh(cyl(0.035,0.035,15), METAL, 0,0.12,-0.12, truss).rotation.z = Math.PI/2;
   mesh(cyl(0.035,0.035,15), METAL, 0,-0.12,0, truss).rotation.z = Math.PI/2;
   for(var ti=-7;ti<=7;ti++){ var br = mesh(cyl(0.015,0.015,0.36,6), METAL, ti,0,0, truss, false); br.rotation.x = Math.PI/4; }
-  function cone(h, rad, color, op){ var c = new THREE.Mesh(new THREE.ConeGeometry(rad, h, 32, 1, true), new THREE.MeshBasicMaterial({color:color, transparent:true, opacity:op, blending:THREE.AdditiveBlending, depthWrite:false, side:THREE.DoubleSide})); c.castShadow=false; return c; }
+  function cone(h, rad, color, op, top){ var c = new THREE.Mesh(new THREE.CylinderGeometry(top||0, rad, h, 32, 1, true), new THREE.MeshBasicMaterial({color:color, transparent:true, opacity:op, blending:THREE.AdditiveBlending, depthWrite:false, side:THREE.DoubleSide})); c.castShadow=false; return c; }
   function fresnel(x, aim, col){
     var g = group(x,-0.3,0,0,truss); mesh(cyl(0.05,0.05,0.3,8), METAL, 0,0.15,0, g, false);
-    var head = group(0,-0.15,0,0,g); head.lookAt(new THREE.Vector3(aim[0], aim[1]-5.1, aim[2]+1.2)); head.rotateX(Math.PI/2);
+    var head = group(0,-0.15,0,0,g); head.lookAt(new THREE.Vector3().fromArray(aim)); head.rotateX(-Math.PI/2); // lens (local -y) faces the aim point
     mesh(cyl(0.22,0.26,0.5,20), BLACK, 0,0,0, head);
     mesh(new THREE.CircleGeometry(0.2,20), new THREE.MeshBasicMaterial({color:col}), 0,-0.26,0, head, false).rotation.x = Math.PI/2;
     for(var k=0;k<4;k++){ var door = mesh(box(k<2?0.5:0.04, 0.04, k<2?0.04:0.5), DARKMETAL, k===0?0:k===1?0:k===2?0.25:-0.25, -0.3, k===0?0.25:k===1?-0.25:0, head, false); door.rotation[k<2?'x':'z'] = (k%2?1:-1)*0.5; }
@@ -56,35 +63,46 @@ function buildStudioSet(THREE, scene, r, opts){
     var d = new THREE.Vector3().subVectors(to, from).normalize(); beam.position.copy(from).addScaledVector(d, 3.3); beam.quaternion.setFromUnitVectors(new THREE.Vector3(0,-1,0), d);
     return beam;
   }
+  [-5,5].forEach(function(x){ rod([x,5.55,-1.2],[x,9.5,-1.2],0.012,METAL,null,6); }); // drop wires up to the grid
   var fr1 = fresnel(-3.6, [-2.6,0,0.2], WARM2), fr2 = fresnel(3.2, [2.6,0,-2.4], LILAC);
 
   /* ---- seamless backdrop roll with a stool: the creator spot ---- */
+  // HEAD is where a seated creator's face would be. The ring light, softbox, LED panel, cine camera, phone and boom mic all aim here.
+  var HEAD = new THREE.Vector3(1.2,1.5,-2.4);
+  function yawTo(x, z){ return Math.atan2(HEAD.x-x, HEAD.z-z); }
+  function tiltTo(x, y, z){ return Math.atan2(y-HEAD.y, Math.hypot(HEAD.x-x, HEAD.z-z)); }
   var bd = group(1.3,0,-4.0);
   mesh(cyl(0.11,0.11,3.4,20), M(0xC4B5F5,{roughness:1}), 0,4.3,0, bd).rotation.z = Math.PI/2; // the roll
   mesh(cyl(0.04,0.04,3.6,8), METAL, 0,4.3,0, bd, false).rotation.z = Math.PI/2; // crossbar
-  [-1.75,1.75].forEach(function(x){ mesh(cyl(0.03,0.03,4.3,8), METAL, x,2.15,0, bd); for(var l=0;l<3;l++){ var leg = mesh(cyl(0.02,0.02,0.9,6), METAL, x+Math.sin(l*2.09)*0.3,0.3,Math.cos(l*2.09)*0.3, bd, false); leg.rotation.z = -Math.sin(l*2.09)*0.6; leg.rotation.x = Math.cos(l*2.09)*0.6; } var bag = mesh(box(0.34,0.14,0.2), M(0x3B3270), x,0.07,0.2, bd); });
+  [-1.75,1.75].forEach(function(x){ var st = group(x,0,0,0,bd); mesh(cyl(0.03,0.03,3.95,8), METAL, 0,2.325,0, st); mesh(cyl(0.05,0.05,0.08,10), DARKMETAL, 0,0.55,0, st, false); legs(st,3,0.55,0.04,0.48,0.02,METAL,Math.PI/3); mesh(box(0.34,0.14,0.2), M(0x3B3270), 0,0.07,-0.32, st); });
   var paper = M(0xAFA0E0,{roughness:1, side:THREE.DoubleSide});
   var sheet = mesh(new THREE.PlaneGeometry(3.0,3.2), paper, 0,2.6,0.1, bd); sheet.castShadow=false;
-  var sweepG = new THREE.PlaneGeometry(3.0,1,1,16); (function(){ var pa = sweepG.attributes.position; for(var i=0;i<pa.count;i++){ var v = (pa.getY(i)+0.5); var th = Math.PI + v*Math.PI/2; pa.setY(i, 1.0 + Math.sin(th)*1.0*-1); pa.setZ(i, 1.1 + Math.cos(th)*1.0); } sweepG.computeVertexNormals(); })(); var sweep = mesh(sweepG, paper, 0,0,0, bd); sweep.castShadow=false;
+  // the sweep: a quarter circle from the bottom of the hanging sheet (y 1.0) down to the floor sheet (z 1.1)
+  var sweepG = new THREE.PlaneGeometry(3.0,1,1,16); (function(){ var pa = sweepG.attributes.position; for(var i=0;i<pa.count;i++){ var phi = (0.5 - pa.getY(i))*Math.PI/2; pa.setY(i, 1.0 - Math.sin(phi)); pa.setZ(i, 1.1 - Math.cos(phi)); } sweepG.computeVertexNormals(); })(); var sweep = mesh(sweepG, paper, 0,0,0, bd); sweep.castShadow=false;
   var sheetFloor = mesh(new THREE.PlaneGeometry(3.0,1.6), paper, 0,0.005,1.9, bd); sheetFloor.rotation.x = -Math.PI/2; sheetFloor.castShadow=false;
   var stool = group(1.2,0,-2.4);
   mesh(cyl(0.3,0.3,0.06,24), M(0x3B3270,{roughness:0.7}), 0,0.72,0, stool);
-  for(var l2=0;l2<4;l2++){ var sl = mesh(cyl(0.018,0.018,0.74,6), METAL, Math.sin(l2*1.57+0.78)*0.22,0.36,Math.cos(l2*1.57+0.78)*0.22, stool); sl.rotation.z = -Math.sin(l2*1.57+0.78)*0.12; sl.rotation.x = Math.cos(l2*1.57+0.78)*0.12; }
-  mesh(new THREE.TorusGeometry(0.2,0.012,8,24), METAL, 0,0.25,0, stool, false).rotation.x = Math.PI/2;
-  // ring light with a phone clamped in the middle, on a stand with a sandbag
-  var ringG = group(1.8,0,-1.2);
-  mesh(cyl(0.03,0.03,2.6), METAL, 0,1.3,0, ringG); for(var l3=0;l3<3;l3++){ var rl = mesh(cyl(0.02,0.02,0.9,6), METAL, Math.sin(l3*2.09)*0.3,0.3,Math.cos(l3*2.09)*0.3, ringG, false); rl.rotation.z = -Math.sin(l3*2.09)*0.6; rl.rotation.x = Math.cos(l3*2.09)*0.6; }
+  legs(stool,4,0.69,0.2,0.27,0.018,METAL,Math.PI/4); // legs splay out towards the floor
+  mesh(new THREE.TorusGeometry(0.245,0.012,8,24), METAL, 0,0.25,0, stool, false).rotation.x = Math.PI/2; // footrest touches all four legs
+  // ring light facing the creator, with a phone clamped in the middle, on a stand with a sandbag
+  var RY = 1.95; // ring centre height: level with the creator's face
+  var ringG = group(1.8,0,-1.2,yawTo(1.8,-1.2));
+  lightStand(ringG, 1.2);
+  mesh(box(0.1,0.08,0.08), DARKMETAL, 0,1.19,0, ringG, false); // tilt head where the ring bolts on
   var ringMat = new THREE.MeshStandardMaterial({color:0xFFF1DC, emissive:0xFFE6C7, emissiveIntensity:1.4, roughness:0.4});
-  var ring = mesh(new THREE.TorusGeometry(0.75,0.08,16,48), ringMat, 0,2.6,0, ringG, false); ring.rotation.y = 0.35;
-  var ringBack = mesh(new THREE.TorusGeometry(0.75,0.1,8,48), BLACK, 0,2.6,-0.03, ringG, false); ringBack.rotation.y = 0.35;
-  var phone = mesh(box(0.16,0.32,0.02), BLACK, 0,2.6,0.02, ringG, false); phone.rotation.y = 0.35; mesh(new THREE.PlaneGeometry(0.14,0.28), new THREE.MeshBasicMaterial({color:0x2B2260}), 0,0,0.011, phone, false);
-  var ringL = new THREE.PointLight(0xFFE6C7, 1.3, 7); ringL.position.set(1.8,2.6,-0.9); scene.add(ringL);
-  var ringBeam = cone(4.6, 1.9, WARM, 0.03); ringBeam.position.set(1.6,2.4,-2.6); ringBeam.rotation.x = -0.45; ringBeam.rotation.z = 0.1; scene.add(ringBeam);
-  mesh(box(0.34,0.14,0.2), M(0x3B3270), 0.2,0.07,0.25, ringG);
+  var ring = mesh(new THREE.TorusGeometry(0.75,0.08,16,48), ringMat, 0,RY,0.02, ringG, false);
+  var ringBack = mesh(new THREE.TorusGeometry(0.75,0.1,8,48), BLACK, 0,RY,-0.03, ringG, false);
+  mesh(cyl(0.012,0.012,RY-1.2,6), METAL, 0,(RY+1.2)/2,0, ringG, false); // phone arm from the tilt head up to the centre
+  var ringPhone = mesh(box(0.16,0.32,0.02), BLACK, 0,RY,0.03, ringG, false); mesh(new THREE.PlaneGeometry(0.14,0.28), new THREE.MeshBasicMaterial({color:0x2B2260}), 0,0,0.011, ringPhone, false);
+  var ringL = new THREE.PointLight(0xFFE6C7, 1.3, 7); ringL.position.set(0,RY,0.5); ringG.add(ringL);
+  mesh(box(0.34,0.14,0.2), M(0x3B3270), 0,0.07,-0.32, ringG);
 
-  /* ---- cine camera on a fluid-head tripod ---- */
-  var camG = group(-2.2,0,0.4,-0.25);
-  for(var i=0;i<3;i++){ var a=i/3*Math.PI*2; var leg = mesh(cyl(0.035,0.035,2.1), METAL, Math.sin(a)*0.5,1.05,Math.cos(a)*0.5, camG); leg.rotation.z = Math.sin(a)*0.4; leg.rotation.x = -Math.cos(a)*0.4; var leg2 = mesh(cyl(0.022,0.022,1.0), DARKMETAL, Math.sin(a)*0.78,0.5,Math.cos(a)*0.78, camG, false); leg2.rotation.z = Math.sin(a)*0.4; leg2.rotation.x = -Math.cos(a)*0.4; var sp2 = mesh(cyl(0.012,0.012,0.6,6), METAL, Math.sin(a+0.5)*0.3,0.35,Math.cos(a+0.5)*0.3, camG, false); sp2.rotation.z = Math.PI/2; sp2.rotation.y = -(a+0.5)+Math.PI/2; }
+  /* ---- cine camera on a fluid-head tripod, pointed at the creator ---- */
+  var camG = group(-2.2,0,0.4,yawTo(-2.2,0.4));
+  for(var i=0;i<3;i++){ var a=i/3*Math.PI*2, tp=[Math.sin(a)*0.09,2.03,Math.cos(a)*0.09], foot=[Math.sin(a)*0.9,0.02,Math.cos(a)*0.9], knee=[0,0,0].map(function(v,k){ return tp[k]+(foot[k]-tp[k])*0.5; });
+    var up = rod(tp, knee, 0.035, METAL, camG, 10); up.castShadow = true; rod([0,0,0].map(function(v,k){ return tp[k]+(foot[k]-tp[k])*0.45; }), foot, 0.024, DARKMETAL, camG, 8);
+    var sp = [0,0,0].map(function(v,k){ return tp[k]+(foot[k]-tp[k])*0.835; }); rod([Math.sin(a)*0.05,0.35,Math.cos(a)*0.05], sp, 0.012, METAL, camG, 6); } // mid-level spreader arms meet each leg
+  mesh(cyl(0.05,0.05,0.06,10), DARKMETAL, 0,0.35,0, camG, false); // spreader hub
   mesh(cyl(0.1,0.08,0.2,16), DARKMETAL, 0,2.12,0, camG); // bowl
   var headG = group(0,2.25,0,0,camG);
   mesh(box(0.3,0.16,0.36), BLACK, 0,0,0, headG);
@@ -102,53 +120,55 @@ function buildStudioSet(THREE, scene, r, opts){
   mesh(cyl(0.16,0.14,0.14,24), M(0x1A1538,{roughness:0.4,metalness:0.4}), 0,0,0.22, lensG, false).rotation.x = Math.PI/2;
   mesh(cyl(0.19,0.17,0.2,24,1,true), BLACK, 0,0,0.38, lensG, false).rotation.x = Math.PI/2; // hood
   mesh(new THREE.CircleGeometry(0.13,24), M(0x1B3A8A,{roughness:0.05,metalness:0.9,emissive:0x0B1A4A}), 0,0,0.3, lensG, false);
-  var vf = mesh(box(0.3,0.2,0.04), BLACK, 0,0.46,-0.5, camBody, false); vf.rotation.x = -0.5; // top monitor
+  var vf = mesh(box(0.3,0.2,0.04), BLACK, 0,0.46,-0.5, camBody, false); vf.rotation.set(0.5, Math.PI, 0); // top monitor, screen turned back towards the operator
   var vfScreen = mesh(new THREE.PlaneGeometry(0.27,0.17), new THREE.MeshBasicMaterial({color:0xDCCFFF}), 0,0,0.021, vf, false);
   mesh(cyl(0.02,0.02,0.3,8), METAL, 0,0.33,-0.42, camBody, false);
   var rec = mesh(new THREE.SphereGeometry(0.035,8,8), B(CORAL), 0.26,0.1,-0.27, camBody, false);
   mesh(box(0.1,0.3,0.12), BLACK, 0,0.05,-0.33, camBody, false); // battery
-  mesh(cyl(0.03,0.03,0.24,8), BLACK, 0.2,0.42,-0.1, camBody, false); // shotgun mic on top
+  mesh(cyl(0.03,0.03,0.24,8), BLACK, 0.2,0.42,-0.1, camBody, false).rotation.x = Math.PI/2; // shotgun mic on top, pointing forward
   var sand = mesh(box(0.34,0.14,0.2), M(0x3B3270), 0.35,0.07,0.4, camG); sand.rotation.y=0.4;
 
-  /* ---- phone on a gimbal on a small tripod, next to the cine camera ---- */
-  var gim = group(-3.4,0,-0.6,0.4);
-  for(var gi=0;gi<3;gi++){ var ga=gi/3*Math.PI*2; var gl = mesh(cyl(0.015,0.015,1.0,6), METAL, Math.sin(ga)*0.22,0.5,Math.cos(ga)*0.22, gim, false); gl.rotation.z = Math.sin(ga)*0.4; gl.rotation.x = -Math.cos(ga)*0.4; }
+  /* ---- phone on a gimbal on a small tripod, next to the cine camera: lens towards the creator, screen towards the operator ---- */
+  var gim = group(-3.4,0,-0.6,yawTo(-3.4,-0.6)+Math.PI);
+  legs(gim,3,0.96,0.03,0.42,0.015,METAL);
   mesh(cyl(0.03,0.03,0.5,8), BLACK, 0,1.2,0, gim); var gArm = mesh(box(0.05,0.3,0.05), BLACK, 0.12,1.55,0, gim, false); var gPhone = mesh(box(0.18,0.36,0.02), BLACK, 0.02,1.68,0, gim); mesh(new THREE.PlaneGeometry(0.16,0.32), new THREE.MeshBasicMaterial({color:0x2B2260}), 0,0,0.011, gPhone, false);
 
-  /* ---- softbox key light on the left ---- */
-  var sb = group(-5.2,0,-2.2,0.9);
-  mesh(cyl(0.035,0.035,3.0), METAL, 0,1.5,0, sb); for(var l4=0;l4<3;l4++){ var sbl = mesh(cyl(0.02,0.02,1.0,6), METAL, Math.sin(l4*2.09)*0.35,0.35,Math.cos(l4*2.09)*0.35, sb, false); sbl.rotation.z = -Math.sin(l4*2.09)*0.6; sbl.rotation.x = Math.cos(l4*2.09)*0.6; }
-  var sbHead = group(0,3.05,0.1,0,sb); sbHead.rotation.x = 0.3;
-  mesh(cyl(0.12,0.12,0.3,16), BLACK, 0,0,-0.25, sbHead).rotation.x = Math.PI/2;
-  var sbBox = mesh(new THREE.CylinderGeometry(0.75,0.12,0.6,4,1,true), M(0x1A1538,{roughness:0.9, side:THREE.DoubleSide}), 0,0,0.2, sbHead); sbBox.rotation.x = -Math.PI/2; sbBox.rotation.y = Math.PI/4; sbBox.castShadow = false;
-  var sbFace = mesh(new THREE.PlaneGeometry(1.05,1.05), new THREE.MeshBasicMaterial({color:WARM2}), 0,0,0.5, sbHead, false);
+  /* ---- softbox key light on the left, aimed at the creator ---- */
+  var sb = group(-5.2,0,-2.2,yawTo(-5.2,-2.2));
+  lightStand(sb, 3.0);
+  var sbHead = group(0,3.05,0.1,0,sb); sbHead.rotation.x = tiltTo(-5.2,3.05,-2.2);
+  mesh(cyl(0.12,0.12,0.3,16), BLACK, 0,0,-0.25, sbHead).rotation.x = Math.PI/2; // speed ring
+  var sbBox = mesh(new THREE.CylinderGeometry(0.75,0.12,0.6,4,1,true), M(0x1A1538,{roughness:0.9, side:THREE.DoubleSide}), 0,0,0.2, sbHead); sbBox.rotation.x = Math.PI/2; sbBox.rotation.y = Math.PI/4; sbBox.castShadow = false; // narrow end on the speed ring, wide end at the diffuser
+  var sbFace = mesh(new THREE.PlaneGeometry(1.05,1.05), new THREE.MeshBasicMaterial({color:WARM2, side:THREE.DoubleSide}), 0,0,0.5, sbHead, false);
   (function(){ var gm = new THREE.LineBasicMaterial({color:0xC9BFA8, transparent:true, opacity:0.5}); var pts = []; for(var g=-0.45;g<=0.46;g+=0.15){ pts.push(new THREE.Vector3(g,-0.52,0.505), new THREE.Vector3(g,0.52,0.505), new THREE.Vector3(-0.52,g,0.505), new THREE.Vector3(0.52,g,0.505)); } var grid = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), gm); sbHead.add(grid); })();
-  var sbBeam = cone(4.8, 1.9, WARM2, 0.022); sbBeam.position.set(0.5,1.5,1.6); sbBeam.rotation.x = 0.55; sbBeam.rotation.z = -0.3; sb.add(sbBeam);
-  mesh(box(0.34,0.14,0.2), M(0x3B3270), 0.3,0.07,0.2, sb);
+  mesh(box(0.34,0.14,0.2), M(0x3B3270), 0,0.07,-0.32, sb);
 
-  /* ---- LED panel with barn doors on the right, and an RGB tube leaning on the wall ---- */
-  var led = group(5.0,0,-0.4,-1.2);
-  mesh(cyl(0.03,0.03,2.3), METAL, 0,1.15,0, led); for(var l5=0;l5<3;l5++){ var ll = mesh(cyl(0.02,0.02,0.9,6), METAL, Math.sin(l5*2.09)*0.3,0.3,Math.cos(l5*2.09)*0.3, led, false); ll.rotation.z = -Math.sin(l5*2.09)*0.6; ll.rotation.x = Math.cos(l5*2.09)*0.6; }
-  var ledHead = group(0,2.35,0,0,led); ledHead.rotation.x = 0.25;
+  /* ---- LED panel with barn doors on the right, aimed at the creator, and an RGB tube leaning on the wall ---- */
+  var led = group(5.0,0,-0.4,yawTo(5.0,-0.4));
+  lightStand(led, 2.3);
+  var ledHead = group(0,2.35,0.06,0,led); ledHead.rotation.x = tiltTo(5.0,2.35,-0.4);
   mesh(box(0.7,0.45,0.08), BLACK, 0,0,0, ledHead);
   var ledFace = mesh(new THREE.PlaneGeometry(0.62,0.38), new THREE.MeshBasicMaterial({color:SKY}), 0,0,0.045, ledHead, false);
-  [[0,0.26,0.1,'x',-0.9,0.7,0.04],[0,-0.26,0.1,'x',0.9,0.7,0.04],[0.38,0,0.1,'z',0.9,0.04,0.5],[-0.38,0,0.1,'z',-0.9,0.04,0.5]].forEach(function(d){ var door = mesh(box(d[5],d[6],0.02), DARKMETAL, d[0],d[1],d[2], ledHead, false); door.rotation[d[3]] = d[4]; });
-  mesh(box(0.34,0.14,0.2), M(0x3B3270), 0.2,0.07,0.25, led);
+  // barn doors hinge on the front edges and open outwards
+  [[0,0.225,'x',-0.5,0.7,0.01],[0,-0.225,'x',0.5,0.7,0.01],[0.35,0,'y',0.5,0.01,0.45],[-0.35,0,'y',-0.5,0.01,0.45]].forEach(function(d){ var hinge = group(d[0],d[1],0.04,0,ledHead); hinge.rotation[d[2]] = d[3]; mesh(box(d[4]===0.7?0.7:0.01, d[4]===0.7?0.01:0.45, 0.2), DARKMETAL, 0,0,0.1, hinge, false); });
+  mesh(box(0.34,0.14,0.2), M(0x3B3270), 0,0.07,-0.32, led);
   var tubeMat = new THREE.MeshStandardMaterial({color:LILAC, emissive:LILAC, emissiveIntensity:1.2, roughness:0.5});
-  var tube = mesh(cyl(0.035,0.035,2.4,12), tubeMat, -6.1,1.2,-4.75, null, false); tube.rotation.z = 0.14; tube.rotation.x = 0.1;
+  var tube = mesh(cyl(0.035,0.035,2.4,12), tubeMat, -6.1,1.19,-4.84, null, false); tube.rotation.z = 0.14; tube.rotation.x = -0.1; // foot out from the wall, top resting on it
 
-  /* ---- boom mic on a C-stand ---- */
-  var cs = group(0.3,0,1.6,0);
-  mesh(cyl(0.03,0.03,2.6), METAL, 0,1.3,0, cs); for(var l6=0;l6<3;l6++){ var cl = mesh(cyl(0.02,0.02,0.8,6), METAL, Math.sin(l6*2.09)*0.3,0.08+l6*0.08,Math.cos(l6*2.09)*0.3, cs, false); cl.rotation.z = -Math.sin(l6*2.09)*1.3; cl.rotation.x = Math.cos(l6*2.09)*1.3; }
-  mesh(box(0.12,0.1,0.1), DARKMETAL, 0,2.6,0, cs, false);
-  var tip = new THREE.Vector3(0.7,3.0,-3.6), base = new THREE.Vector3(0,2.6,0), mid = base.clone().lerp(tip,0.5);
-  var boom = mesh(cyl(0.018,0.018,base.distanceTo(tip),8), METAL, mid.x,mid.y,mid.z, cs); boom.lookAt(cs.localToWorld(tip.clone())); boom.rotateX(Math.PI/2);
-  mesh(box(0.34,0.14,0.2), M(0x3B3270), -0.5,2.62,0.3, cs, false); // counterweight on the short end
-  var shock = group(tip.x,tip.y-0.15,tip.z,0,cs); shock.rotation.x = Math.PI/2*0.75;
-  mesh(new THREE.TorusGeometry(0.08,0.012,8,24), DARKMETAL, 0,0,0, shock, false); mesh(new THREE.TorusGeometry(0.08,0.012,8,24), DARKMETAL, 0,0,0.14, shock, false);
-  mesh(cyl(0.028,0.028,0.5,10), BLACK, 0,0,0.07, shock, false).rotation.x = Math.PI/2;
-  mesh(cyl(0.06,0.06,0.3,10), M(0x6E6A86,{roughness:1}), 0,0,0.3, shock, false).rotation.x = Math.PI/2; // windshield
-  mesh(box(0.34,0.14,0.2), M(0x3B3270), -0.25,0.07,0.2, cs);
+  /* ---- boom mic on a C-stand: one straight arm from the stand's knuckle to a mic just above the creator ---- */
+  var cs = group(0.1,0,1.5);
+  mesh(cyl(0.03,0.03,2.3,8), METAL, 0,1.45,0, cs); // riser
+  [0.3,0.38,0.46].forEach(function(ty,i){ var a = i/3*Math.PI*2+0.4; rod([Math.sin(a)*0.04,ty,Math.cos(a)*0.04],[Math.sin(a)*0.62,0.02,Math.cos(a)*0.62],0.02,METAL,cs,6); }); // staggered C-stand legs
+  mesh(box(0.34,0.14,0.2), M(0x3B3270), Math.sin(0.4)*0.35,0.07,Math.cos(0.4)*0.35, cs).rotation.y = 0.4; // sandbag on the high leg
+  var PIV = new THREE.Vector3(0.1,2.62,1.5), TIP = new THREE.Vector3(1.25,2.3,-2.1), bu = TIP.clone().sub(PIV).normalize(), REAR = PIV.clone().addScaledVector(bu,-0.9);
+  mesh(new THREE.SphereGeometry(0.065,12,10), DARKMETAL, PIV.x,PIV.y,PIV.z); // grip head (knuckle) on top of the riser
+  rod(REAR.toArray(), TIP.toArray(), 0.018, METAL, null, 8).castShadow = true; // the boom passes through the knuckle
+  mesh(box(0.3,0.14,0.18), M(0x3B3270), REAR.x,REAR.y-0.08,REAR.z, null, false); // counterweight on the short end
+  rod(TIP.toArray(), [TIP.x,TIP.y-0.16,TIP.z], 0.012, DARKMETAL, null, 6); // stud down to the shock mount
+  var micG = group(TIP.x,TIP.y-0.16,TIP.z); micG.lookAt(HEAD.x, HEAD.y-0.1, HEAD.z+0.12); // aimed at the mouth
+  mesh(new THREE.TorusGeometry(0.08,0.012,8,24), DARKMETAL, 0,0,-0.07, micG, false); mesh(new THREE.TorusGeometry(0.08,0.012,8,24), DARKMETAL, 0,0,0.07, micG, false);
+  mesh(cyl(0.028,0.028,0.5,10), BLACK, 0,0,0.0, micG, false).rotation.x = Math.PI/2;
+  mesh(cyl(0.06,0.06,0.3,10), M(0x6E6A86,{roughness:1}), 0,0,0.28, micG, false).rotation.x = Math.PI/2; // windshield on the front
 
   /* ---- edit desk ---- */
   var desk = group(3.4,0,-2.6,-0.5);
@@ -156,7 +176,7 @@ function buildStudioSet(THREE, scene, r, opts){
   mesh(box(2.6,0.1,0.06), WOOD2, 0,1.02,0.57, desk, false);
   [[-1.1,0.45],[1.1,0.45],[-1.1,-0.45],[1.1,-0.45]].forEach(function(p){ mesh(cyl(0.025,0.025,1.1), METAL, p[0],0.55,p[1], desk); });
   mesh(box(2.2,0.04,0.9), M(0x2A2450), 0,0.3,0, desk, false); // shelf under
-  mesh(box(0.5,0.3,0.4), BLACK, -0.8,0.5,0, desk); // PC tower on the shelf
+  mesh(box(0.5,0.3,0.4), BLACK, -0.8,0.47,0, desk); // PC tower on the shelf
   var pcLed = mesh(new THREE.PlaneGeometry(0.2,0.02), new THREE.MeshBasicMaterial({color:BLUE}), -0.8,0.6,0.201, desk, false);
   // monitor
   var monArm = mesh(cyl(0.03,0.03,0.5,8), METAL, 0,1.35,-0.3, desk, false); mesh(box(0.4,0.02,0.3), METAL, 0,1.14,-0.3, desk, false);
@@ -196,28 +216,30 @@ function buildStudioSet(THREE, scene, r, opts){
   mesh(box(0.7,0.025,0.22), M(0xD2CCE6,{roughness:0.5}), 0.05,1.14,0.32, desk, false); for(var kx=0;kx<10;kx++) for(var ky=0;ky<3;ky++){ mesh(box(0.05,0.012,0.05), BLACK, -0.25+kx*0.06,1.16,0.25+ky*0.06, desk, false); }
   mesh(new THREE.SphereGeometry(0.05,12,8), M(0xD2CCE6,{roughness:0.4}), 0.55,1.15,0.35, desk, false).scale.set(1,0.6,1.4);
   [-1.2,1.2].forEach(function(x){ mesh(box(0.16,0.3,0.16), BLACK, x,1.28,-0.35, desk); mesh(new THREE.CircleGeometry(0.05,16), M(0x3B3270), x,1.3,-0.27, desk, false); });
-  var lamp = group(1.0,1.13,-0.3,0,desk); mesh(cyl(0.1,0.1,0.02,16), DARKMETAL, 0,0,0, lamp); var lampArm = mesh(cyl(0.012,0.012,0.6,6), METAL, 0,0.3,0, lamp, false); var lampArm2 = mesh(cyl(0.012,0.012,0.5,6), METAL, -0.15,0.7,0.1, lamp, false); lampArm2.rotation.z = 0.6; lampArm2.rotation.x = -0.4; var lampHead = mesh(cyl(0.02,0.1,0.18,16,1,true), M(0xFF5E4D,{roughness:0.6, side:THREE.DoubleSide}), -0.34,0.84,0.22, lamp, false); lampHead.rotation.z = 0.9; lampHead.rotation.x = 0.4;
+  var lamp = group(1.0,1.13,-0.3,0,desk); mesh(cyl(0.1,0.1,0.02,16), DARKMETAL, 0,0.01,0, lamp); var LJ = [[0,0.02,0],[0.05,0.55,-0.1],[-0.22,0.78,0.1]]; rod(LJ[0],LJ[1],0.012,METAL,lamp,6); rod(LJ[1],LJ[2],0.012,METAL,lamp,6); mesh(new THREE.SphereGeometry(0.022,8,6), DARKMETAL, LJ[1][0],LJ[1][1],LJ[1][2], lamp, false); var lampHeadG = group(LJ[2][0],LJ[2][1],LJ[2][2],0,lamp); lampHeadG.rotation.x = -0.7; var lampHead = mesh(cyl(0.02,0.1,0.18,16,1,true), M(0xFF5E4D,{roughness:0.6, side:THREE.DoubleSide}), 0,-0.09,0, lampHeadG, false); // jointed arm, shade pointing down at the desk
   var mug = mesh(cyl(0.05,0.045,0.11,16), M(CORAL,{roughness:0.5}), 0.6,1.19,0.0, desk); mesh(new THREE.TorusGeometry(0.035,0.008,8,16), M(CORAL,{roughness:0.5}), 0.66,1.19,0, desk, false);
   var steam = mesh(new THREE.PlaneGeometry(0.08,0.14), new THREE.MeshBasicMaterial({color:0xFFF6EA, transparent:true, opacity:0.12, side:THREE.DoubleSide}), 0.6,1.32,0, desk, false);
   mesh(box(0.22,0.02,0.3), M(0xF6F3EC,{roughness:1}), -0.4,1.14,0.42, desk, false); mesh(box(0.012,0.012,0.16), M(BLUE), -0.3,1.16,0.4, desk, false);
-  var hp = group(1.25,1.52,0.0,0,desk); mesh(new THREE.TorusGeometry(0.11,0.015,8,24,Math.PI), BLACK, 0,0,0, hp, false); [[-0.11,-0.02],[0.11,-0.02]].forEach(function(p){ mesh(cyl(0.05,0.05,0.04,16), BLACK, p[0],p[1],0, hp, false).rotation.z = Math.PI/2; }); mesh(cyl(0.012,0.012,0.4,6), METAL, 0,-0.1,-0.1, hp, false); // hook post is the headphone stand
-  // chair
-  var chair = group(3.6,0,-1.2,-0.9);
-  mesh(cyl(0.03,0.03,0.42,8), METAL, 0,0.5,0, chair); for(var c5=0;c5<5;c5++){ var ca = c5/5*Math.PI*2; var arm = mesh(box(0.34,0.03,0.04), DARKMETAL, Math.sin(ca)*0.17,0.06,Math.cos(ca)*0.17, chair, false); arm.rotation.y = ca; var wheel = mesh(cyl(0.03,0.03,0.03,10), BLACK, Math.sin(ca)*0.34,0.03,Math.cos(ca)*0.34, chair, false); wheel.rotation.z = Math.PI/2; wheel.rotation.y = ca; }
+  var hp = group(1.25,1.52,0.0,0,desk); mesh(new THREE.TorusGeometry(0.11,0.015,8,24,Math.PI), BLACK, 0,0,0, hp, false); [[-0.11,-0.02],[0.11,-0.02]].forEach(function(p){ mesh(cyl(0.05,0.05,0.04,16), BLACK, p[0],p[1],0, hp, false).rotation.z = Math.PI/2; }); mesh(cyl(0.012,0.012,0.48,6), METAL, 0,-0.145,0, hp, false); mesh(cyl(0.06,0.06,0.015,12), DARKMETAL, 0,-0.38,0, hp, false); // headphones hang on a stand that stands on the desk
+  // desk chair, tucked in at the desk and facing the monitor
+  var chair = group(0.2,0,0.9,Math.PI,desk);
+  mesh(cyl(0.03,0.03,0.64,8), METAL, 0,0.4,0, chair); for(var c5=0;c5<5;c5++){ var ca = c5/5*Math.PI*2; var arm = mesh(box(0.34,0.03,0.04), DARKMETAL, Math.sin(ca)*0.17,0.06,Math.cos(ca)*0.17, chair, false); arm.rotation.y = ca - Math.PI/2; var wheel = mesh(cyl(0.03,0.03,0.03,10), BLACK, Math.sin(ca)*0.34,0.03,Math.cos(ca)*0.34, chair, false); wheel.rotation.z = Math.PI/2; wheel.rotation.y = ca; }
   mesh(box(0.48,0.08,0.46), FABRIC, 0,0.74,0, chair); var back = mesh(box(0.46,0.56,0.07), FABRIC, 0,1.1,-0.22, chair); back.rotation.x = -0.12; [-0.26,0.26].forEach(function(x){ mesh(box(0.04,0.22,0.3), BLACK, x,0.9,0.02, chair, false); });
 
   /* ---- director's chair, apple boxes, clapperboard, cases, tape ---- */
-  var dc = group(-4.4,0,1.0,0.7);
+  var dc = group(-4.4,0,1.0,yawTo(-4.4,1.0)); // faces the set, so the name panel on the back faces the room
+  [-0.25,0.25].forEach(function(x){ rod([x,0,0.25],[x,0.95,0.25],0.022,WOOD,dc,6); rod([x,0,-0.25],[x,1.45,-0.25],0.022,WOOD,dc,6); rod([x,0.05,0.25],[x,0.66,-0.25],0.014,WOOD,dc,6); rod([x,0.05,-0.25],[x,0.66,0.25],0.014,WOOD,dc,6); mesh(box(0.06,0.03,0.58), WOOD, x,0.96,0, dc, false); });
+  mesh(box(0.5,0.02,0.5), M(0x0E0E1A,{roughness:1}), 0,0.7,0, dc); mesh(box(0.56,0.28,0.02), M(LIME,{roughness:1}), 0,1.25,-0.27, dc); mesh(box(0.56,0.06,0.02), M(0x0E0E1A,{roughness:1}), 0,1.25,-0.282, dc, false);
   [[-0.25,0.25],[0.25,0.25],[-0.25,-0.25],[0.25,-0.25]].forEach(function(p,i){ var l = mesh(box(0.04,1.1,0.04), WOOD, p[0],0.55,p[1], dc); l.rotation.z = (p[0]<0?1:-1)*0.1; }); mesh(box(0.5,0.02,0.5), M(0x0E0E1A,{roughness:1}), 0,0.7,0, dc); mesh(box(0.56,0.28,0.02), M(LIME,{roughness:1}), 0,1.25,-0.27, dc); mesh(box(0.56,0.06,0.02), M(0x0E0E1A,{roughness:1}), 0,1.25,-0.265, dc, false);
   var ab1 = mesh(box(0.9,0.35,0.6), WOOD, -0.6,0.175,-1.6); ab1.rotation.y=0.3; var ab2 = mesh(box(0.9,0.35,0.6), WOOD2, -0.6,0.525,-1.6); ab2.rotation.y=0.55;
-  var clap = group(-0.6,0.72,-1.6,0.55); clap.rotation.x=-0.1; mesh(box(0.5,0.4,0.02), BLACK, 0,0,0, clap); var sticks = group(-0.25,0.2,0.012,0,clap); for(var k=0;k<5;k++){ var st = mesh(new THREE.PlaneGeometry(0.1,0.08), new THREE.MeshBasicMaterial({color:k%2?CREAM:INK}), 0.05+k*0.1,0.04,0, sticks, false); st.rotation.z=0.5; }
+  var clap = group(0.05,0.186,0.02,0,ab2); clap.rotation.x = -Math.PI/2; /* lying flat on the top apple box */ mesh(box(0.5,0.4,0.02), BLACK, 0,0,0, clap); var sticks = group(-0.25,0.2,0.012,0,clap); for(var k=0;k<5;k++){ var st = mesh(new THREE.PlaneGeometry(0.1,0.08), new THREE.MeshBasicMaterial({color:k%2?CREAM:INK}), 0.05+k*0.1,0.04,0, sticks, false); st.rotation.z=0.5; }
   [[0.08,0.14],[0.08,0.06],[0.08,-0.02]].forEach(function(p){ mesh(new THREE.PlaneGeometry(0.3,0.02), new THREE.MeshBasicMaterial({color:CREAM}), p[0],p[1]-0.1,0.012, clap, false); });
-  var tape = mesh(cyl(0.07,0.07,0.05,20), M(0x1A1538), -0.95,0.725,-1.75); tape.rotation.x = Math.PI/2; var tape2 = mesh(cyl(0.07,0.07,0.05,20), M(CORAL), -0.9,0.76,-1.3);
+  var tape = mesh(cyl(0.07,0.07,0.05,20), M(0x1A1538), -0.33,0.2,-0.12, ab2); var tape2 = mesh(cyl(0.07,0.07,0.05,20), M(CORAL), 0.37,0.2,0.16, ab2); // tape rolls lying flat on the box
   var cases = group(-5.6,0,0.4,-0.3); mesh(box(0.9,0.4,0.6), M(0x1A1538,{roughness:0.7}), 0,0.2,0, cases); mesh(box(0.86,0.36,0.56), M(0x241C4F,{roughness:0.7}), 0,0.58,0, cases); mesh(box(0.7,0.3,0.5), M(CORAL,{roughness:0.7}), 0.05,0.91,0.02, cases); [[-0.3,0.2],[0.3,0.2],[-0.3,0.58],[0.3,0.58]].forEach(function(p){ mesh(box(0.1,0.08,0.03), BLACK, p[0],p[1],0.31, cases, false); });
   // ladder against the wall, plant, fan
-  var lad = group(6.3,0,-4.5,-0.3); lad.rotation.x = -0.18; [-0.25,0.25].forEach(function(x){ mesh(box(0.05,3.2,0.05), METAL, x,1.6,0, lad); }); for(var rg=0;rg<7;rg++){ mesh(cyl(0.018,0.018,0.5,6), METAL, 0,0.35+rg*0.42,0, lad, false).rotation.z = Math.PI/2; }
+  var lad = group(6.3,0,-4.4,-0.3); lad.rotation.x = -0.15; /* top rests on the wall without going through it */ [-0.25,0.25].forEach(function(x){ mesh(box(0.05,3.2,0.05), METAL, x,1.6,0, lad); }); for(var rg=0;rg<7;rg++){ mesh(cyl(0.018,0.018,0.5,6), METAL, 0,0.35+rg*0.42,0, lad, false).rotation.z = Math.PI/2; }
   var pot = group(5.6,0,-4.1); mesh(cyl(0.22,0.17,0.4,16), M(0xC9B48A,{roughness:1}), 0,0.2,0, pot); mesh(cyl(0.02,0.03,0.9,6), M(0x3B2F1E), 0,0.8,0, pot, false); for(var lf=0;lf<9;lf++){ var leaf = mesh(new THREE.SphereGeometry(0.16,8,6), M(0x2E6B4A,{roughness:1}), Math.sin(lf*0.7)*0.3,1.1+Math.sin(lf*1.3)*0.25,Math.cos(lf*0.7)*0.3, pot); leaf.scale.set(1,0.5,1.4); leaf.rotation.y = lf*0.7; }
-  var fan = group(-3.9,0,-3.6,0.6); mesh(cyl(0.3,0.3,0.03,20), BLACK, 0,0.015,0, fan); mesh(cyl(0.025,0.025,1.0,8), METAL, 0,0.5,0, fan); var fanHead = group(0,1.05,0,0,fan); mesh(new THREE.TorusGeometry(0.32,0.02,8,32), METAL, 0,0,0, fanHead, false); var blades = group(0,0,0.02,0,fanHead); for(var bl=0;bl<3;bl++){ var b = mesh(box(0.1,0.26,0.01), M(0xD2CCE6,{roughness:0.5}), 0,0.15,0, blades, false); b.rotation.z = bl*2.09; var bb = group(0,0,0,0,blades); bb.rotation.z = bl*2.09; blades.remove(b); bb.add(b); }
+  var fan = group(-3.9,0,-3.6,0.6); mesh(cyl(0.3,0.3,0.03,20), BLACK, 0,0.015,0, fan); mesh(cyl(0.025,0.025,1.0,8), METAL, 0,0.5,0, fan); var fanHead = group(0,1.05,0,0,fan); mesh(cyl(0.09,0.11,0.14,16), BLACK, 0,0,-0.06, fanHead, false).rotation.x = Math.PI/2; /* motor on top of the pole */ mesh(new THREE.TorusGeometry(0.32,0.02,8,32), METAL, 0,0,0, fanHead, false); var blades = group(0,0,0.02,0,fanHead); for(var bl=0;bl<3;bl++){ var b = mesh(box(0.1,0.26,0.01), M(0xD2CCE6,{roughness:0.5}), 0,0.15,0, blades, false); b.rotation.z = bl*2.09; var bb = group(0,0,0,0,blades); bb.rotation.z = bl*2.09; blades.remove(b); bb.add(b); }
   // wall: whiteboard with sticky notes and a chart, clock, shelf, neon sign
   var board = mesh(new THREE.PlaneGeometry(2.6,1.5), M(0xFBF8F1,{roughness:0.9}), -3.2,2.2,-4.95, null, false); mesh(box(2.7,1.6,0.03), M(0x8E89A8,{metalness:0.6,roughness:0.4}), -3.2,2.2,-4.97, null, false); mesh(box(2.6,0.04,0.08), M(0x8E89A8,{metalness:0.6,roughness:0.4}), -3.2,1.43,-4.92, null, false);
   (function(){ var pts = [], col = new THREE.LineBasicMaterial({color:BLUE}); for(var i=0;i<=8;i++){ pts.push(new THREE.Vector3(-4.3+i*0.26, 1.7 + Math.pow(i/8,2)*0.9 + Math.sin(i)*0.05, -4.94)); } scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), col)); var ax = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-4.3,1.65,-4.94),new THREE.Vector3(-2.1,1.65,-4.94),new THREE.Vector3(-4.3,1.65,-4.94),new THREE.Vector3(-4.3,2.8,-4.94)]), new THREE.LineBasicMaterial({color:0x140F2D})); scene.add(ax); })();
@@ -226,11 +248,17 @@ function buildStudioSet(THREE, scene, r, opts){
   var clock = group(5.6,3.5,-4.95); mesh(new THREE.CircleGeometry(0.3,32), M(0xFBF8F1,{roughness:0.9}), 0,0,0, clock, false); mesh(new THREE.TorusGeometry(0.3,0.02,8,32), BLACK, 0,0,0, clock, false); var hH = mesh(new THREE.PlaneGeometry(0.02,0.16), new THREE.MeshBasicMaterial({color:INK}), 0,0,0.005, clock, false); hH.geometry.translate(0,0.07,0); var hM = mesh(new THREE.PlaneGeometry(0.015,0.24), new THREE.MeshBasicMaterial({color:INK}), 0,0,0.006, clock, false); hM.geometry.translate(0,0.11,0); var hS = mesh(new THREE.PlaneGeometry(0.008,0.26), new THREE.MeshBasicMaterial({color:CORAL}), 0,0,0.007, clock, false); hS.geometry.translate(0,0.1,0);
   var shelf = group(5.0,2.2,-4.85); mesh(box(2.0,0.05,0.3), WOOD2, 0,0,0, shelf); [-0.9,0.9].forEach(function(x){ mesh(box(0.04,0.3,0.26), METAL, x,-0.17,0, shelf, false); });
   [[-0.8,0x2B4BFF,0.09,0.42],[-0.69,0xFF5E4D,0.07,0.38],[-0.6,0xDCCFFF,0.08,0.4],[-0.5,0x0E0E1A,0.06,0.36],[-0.43,0xD9F55B,0.05,0.3]].forEach(function(bk){ mesh(box(bk[2],bk[3],0.26), M(bk[1],{roughness:1}), bk[0],bk[3]/2+0.025,0, shelf); });
-  mesh(box(0.34,0.26,0.24), BLACK, 0.1,0.16,0, shelf); mesh(cyl(0.08,0.08,0.18,16), BLACK, 0.5,0.12,0.02, shelf).rotation.x = Math.PI/2; mesh(cyl(0.05,0.05,0.2,16), M(0xD2CCE6,{roughness:0.3,metalness:0.4}), 0.72,0.125,0.02, shelf).rotation.x = Math.PI/2; var award = mesh(cyl(0.02,0.06,0.3,12), M(0xE3C56A,{metalness:0.8,roughness:0.3}), 0.9,0.18,0, shelf);
+  mesh(box(0.34,0.26,0.24), BLACK, 0.1,0.16,0, shelf); mesh(cyl(0.08,0.08,0.18,16), BLACK, 0.5,0.12,0.02, shelf).rotation.x = Math.PI/2; mesh(cyl(0.05,0.05,0.2,16), M(0xD2CCE6,{roughness:0.3,metalness:0.4}), 0.72,0.075,0.02, shelf).rotation.x = Math.PI/2; var award = mesh(cyl(0.02,0.06,0.3,12), M(0xE3C56A,{metalness:0.8,roughness:0.3}), 0.9,0.18,0, shelf);
   function textTex(text, fg, w, h, font){ var c = document.createElement('canvas'); c.width = w; c.height = h; var x = c.getContext('2d'); x.fillStyle = fg; x.font = font; x.textAlign='center'; x.textBaseline='middle'; x.fillText(text, w/2, h/2); var t = new THREE.CanvasTexture(c); t.minFilter = THREE.LinearFilter; return t; }
   var neonMat = new THREE.MeshBasicMaterial({map:textTex('on air', '#FF5E4D', 1024, 256, 'italic 300 190px "Fraunces", Georgia, serif'), transparent:true});
   var neon = mesh(new THREE.PlaneGeometry(2.2,0.55), neonMat, 3.4,3.9,-4.9, null, false);
   var neonTube = mesh(new THREE.TorusGeometry(1.25,0.018,8,48), new THREE.MeshBasicMaterial({color:CORAL}), 3.4,3.9,-4.92, null, false); neonTube.scale.set(1,0.3,1);
+  // light beams: each starts at its light's face and runs through the creator's face
+  scene.updateMatrixWorld(true);
+  function beamFrom(obj, local, extra, rad, col, op, top){ var from = obj.localToWorld(new THREE.Vector3().fromArray(local)), d = HEAD.clone().sub(from), len = d.length()+extra; d.normalize(); var b = cone(len, rad, col, op, top); b.position.copy(from).addScaledVector(d, len/2); b.quaternion.setFromUnitVectors(new THREE.Vector3(0,-1,0), d); scene.add(b); return b; }
+  var sbBeam = beamFrom(sbHead, [0,0,0.5], 0.8, 1.5, WARM2, 0.022, 0.6);
+  var ringBeam = beamFrom(ringG, [0,RY,0.05], 1.0, 1.1, WARM, 0.03, 0.7);
+  var ledBeam = beamFrom(ledHead, [0,0,0.06], 0.6, 1.0, SKY, 0.018, 0.3);
   // haze
   var hz = (function(n){ var g = new THREE.BufferGeometry(), p = new Float32Array(n*3); for(var i=0;i<n;i++){ p[i*3]=(Math.random()-.5)*16; p[i*3+1]=Math.random()*6; p[i*3+2]=(Math.random()-.5)*12; } g.setAttribute('position', new THREE.BufferAttribute(p,3)); var pts = new THREE.Points(g, new THREE.PointsMaterial({color:WARM, size:0.022, transparent:true, opacity:0.5, blending:THREE.AdditiveBlending, depthWrite:false})); scene.add(pts); return pts; })(phone?220:420);
 
@@ -247,13 +275,13 @@ function buildStudioSet(THREE, scene, r, opts){
     blades.rotation.z = t*9; fanHead.rotation.y = Math.sin(t*0.5)*0.6;
     hS.rotation.z = -(t%60)/60*Math.PI*2; hM.rotation.z = -((t/60)%60)/60*Math.PI*2; hH.rotation.z = -1.9;
     steam.position.y = 1.32 + ((t*0.15)%0.2); steam.material.opacity = 0.14 - ((t*0.15)%0.2)*0.6; steam.lookAt(opts.cam.position);
-    chair.rotation.y = -0.9 + Math.sin(t*0.3)*0.05;
+    chair.rotation.y = Math.PI + Math.sin(t*0.3)*0.05;
     gim.children[gim.children.length-1].rotation.z = Math.sin(t*0.7)*0.06;
     if(frame%(phone?12:6)===0) drawScreen(t);
   }
   var hotspots = [
     {p:[-2.2,3.0,0.4], t:'Brand films', d:'15+ campus events and NIAT brand films, produced end to end.'},
-    {p:[1.8,3.6,-1.2], t:'Creator campaigns', d:'Regional creator-led campaign: 6M+ views in two months.'},
+    {p:[1.8,3.05,-1.2], t:'Creator campaigns', d:'Regional creator-led campaign: 6M+ views in two months.'},
     {p:[3.4,2.8,-2.6], t:'Student Creator Program', d:'15+ creators, 200+ UGC videos, 500K+ views.'},
     {p:[1.6,3.3,-2.2], t:'On camera', d:'Hosting, interviews, and a Short that hit 2M views in a day.'},
     {p:[-3.2,3.2,-4.6], t:'Strategy', d:'L’Oréal Luxe Takami launch plan; 60+ brands in Singapore.'}
