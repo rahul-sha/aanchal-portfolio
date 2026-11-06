@@ -11,7 +11,9 @@ A single-page portfolio for Aanchal Sharma, brand and content strategist. Plain 
 - `three.min.js`: Three.js r128, bundled locally
 - `img/`: photos used in the page (WebP)
 - `media/`: reel posters (WebP) and 8-second muted preview loops
-- `vercel.json`: cache headers for the static assets
+- `vercel.json`: cache headers for the static assets and the ignored build step
+- `scripts/ignore-build.sh`: skips preview builds for docs-only pushes
+- `CLAUDE.md`: instructions Claude Code reads when working in this repository
 - `Aanchal-Sharma-CV.pdf`: the CV served by the Download CV button
 - `.claude/skills/`: agent skills used when working on this repository with Claude Code
 
@@ -35,7 +37,7 @@ Before merging a change, run Lighthouse and an axe scan against a local server (
 
 ## Deploy
 
-The site is static, so Vercel serves it as it is: import the repository, keep the defaults, and deploy.
+The site is live at https://www.aanchalll.com. Vercel publishes every merge into `main` and builds a preview for other branches. Previews are skipped when a push changes only `.md` files or `docs/` (see `scripts/ignore-build.sh`, set as `ignoreCommand` in `vercel.json`); production always builds.
 
 ## Releasing a script change
 
