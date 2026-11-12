@@ -1,5 +1,7 @@
 # CLAUDE.md
 
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 ## What this project does
 Portfolio site for Aanchal Sharma, brand and content strategist, built to win her next role.
 One page, live at https://www.aanchalll.com, with a 3D studio hero and a creator wall.
@@ -11,8 +13,18 @@ One page, live at https://www.aanchalll.com, with a 3D studio hero and a creator
 
 ## Run commands
 - Start: `python3 -m http.server 8000`, then open http://localhost:8000.
-- Test: no automated suite. Use the `webapp-testing` skill (Playwright) at 390 px and 1280 px, with dark mode on, and reduced motion on and off; run axe and Lighthouse as in `README.md`.
+- Test: no automated suite. Write a Playwright check (`webapp-testing` skill) and run it with the server: `python3 .claude/skills/webapp-testing/scripts/with_server.py --server "python3 -m http.server 8000" --port 8000 -- python3 check.py`.
+- Check at 390 px and 1280 px, with the system in dark mode (the page must stay light), and with reduced motion on and off. Targets: zero axe violations, and Lighthouse accessibility, best practices, and SEO at 100.
 - Deploy: merge the pull request into `main`; Vercel publishes it. Branches get previews, except when only `.md` files or `docs/` change (`scripts/ignore-build.sh`).
+
+## How the page fits together
+- `index.html` is a deck of full-screen `.panel` sections (`#top`, `#results`, `#work`, `#creators`, `#about`, `#experience`, `#contact`) that stick and stack as you scroll; project details open in `<dialog class="proj">` boxes.
+- `app.js` reads data attributes: `data-rv` (reveal on scroll), `data-count` and `data-comma` (count-up, Indian digit grouping), `data-open` (opens a dialog), `video[data-src]` (loaded only when its dialog opens), `data-px` (parallax image).
+- Sticky panels break the browser's own anchor jumps, so `app.js` scrolls in-page links itself (`goTo`). New `#` links work without extra code.
+- `scene.js` starts after page load in idle time. The studio hero (`#top`, built by `buildStudioSet`) renders at once; the creator wall (`#creators`, `buildWall`) is built only when scrolled within 600 px. Each stage renders only while its `data-scene` element is on screen.
+- The creator wall's 54 tiles share one texture, `media/wall-atlas.webp` (6 reels by 4 frames).
+- Reduced motion is handled in three places: the CSS media query, `app.js`, and `scene.js`. A new animation needs all that apply.
+- `phone` in `buildStudioSet` means a portrait hero (narrower than tall); it turns shadows off.
 
 ## Data and safety
 - No database, accounts, or secrets. The real data is her work, figures, and CV.
