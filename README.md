@@ -15,7 +15,10 @@ A single-page portfolio for Aanchal Sharma, brand and content strategist. Plain 
 - `scripts/ignore-build.sh`: skips preview builds for docs-only pushes
 - `CLAUDE.md`: instructions Claude Code reads when working in this repository
 - `Aanchal-Sharma-CV.pdf`: the CV served by the Download CV button
-- `.claude/skills/`: agent skills used when working on this repository with Claude Code
+- `.claude/settings.json`: turns on the Cartographer plugin, which brings Rahul's shared rules and skills
+- `.claude/skills/`: agent skills used only for this site
+- `.claude/rules/project-rules.md`: rules that apply only to this site
+- `docs/bugs.md` and `docs/roadmap.md`: known bugs and the plan
 
 ## Design system
 
