@@ -1,5 +1,0 @@
-MIT License
-
-Copyright (c) Vercel, Inc.
-
-Source: https://github.com/vercel-labs/agent-skills (README states the MIT licence).
